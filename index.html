@@ -89,8 +89,20 @@ document.documentElement.setAttribute("data-theme",t);})();</script>
   .top-card a{color:var(--accent-ui)}
   .disclaimer{background:var(--warn-bg); border:1px solid var(--warn-line); color:var(--warn-ink);
     border-radius:12px; padding:14px 18px; font-size:14px; margin:22px 0}
+  .notice{background:color-mix(in srgb, var(--accent) 10%, var(--card)); border:1px solid color-mix(in srgb, var(--accent) 45%, var(--line));
+    color:var(--ink); border-radius:12px; padding:14px 18px; font-size:14.5px; margin:18px 0}
+  .email-row{display:flex; gap:10px; margin-top:12px; align-items:stretch}
+  .email-row input{flex:1; min-width:0; font-family:inherit; font-size:16px; padding:12px 14px;
+    background:var(--card2); color:var(--ink); border:1px solid var(--line); border-radius:10px; outline:none}
+  .email-row input:focus{border-color:var(--accent)}
+  .email-row .btn{margin-top:0; white-space:nowrap}
+  .email-note{font-size:13.5px; margin-top:10px; min-height:18px; color:var(--muted)}
+  .email-note.err{color:#b0584a}
+  .email-note.ok{color:var(--accent-ui)}
+  .email-note a{cursor:pointer; text-decoration:underline; color:var(--accent-ui)}
   @media(max-width:640px){
     .app{padding:22px 14px 60px}
+    .email-row{flex-direction:column}
     h1{font-size:26px}
     .lead{font-size:16px}
     .scale{grid-template-columns:repeat(6,1fr)}
@@ -245,7 +257,12 @@ const TYPES=[
 "Мне кажется, что моя «разобранность» и непостоянство — это что-то постыдное, дефект характера или лень, а не защитный механизм психики."]}
 ];
 const SCALE_MIN=0, SCALE_MAX=10, PER_PAGE=9;
-let answers={}, page=-1, seed=null; // -1 intro, 0..9 questions, 10 results
+// EmailJS credentials; while any field is empty the address is validated and
+// stored but no mail is sent (emailStatus becomes "unconfigured")
+const EMAIL_CONFIG={serviceId:"",templateId:"",publicKey:""};
+const SITE_URL="https://fsv2k5.github.io/character-typology-test/";
+let answers={}, page=-1, seed=null; // -1 intro, 0..9 questions, 10 email, 11 results
+let email=null, emailStatus=null; // sent | failed | unconfigured
 const order=[]; // interleaved statement order, unique per respondent
 
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -264,9 +281,9 @@ function buildOrder(){
   }
 }
 function key(o){return o.type+"-"+o.idx}
-function save(){try{localStorage.setItem("chartest",JSON.stringify({answers,page,seed}))}catch(e){}}
-function load(){try{const s=JSON.parse(localStorage.getItem("chartest")); if(s){answers=s.answers||{}; page=(typeof s.page==="number")?s.page:-1; if(typeof s.seed==="number")seed=s.seed}}catch(e){}}
-function restart(toPage){answers={}; seed=newSeed(); buildOrder(); page=toPage; render()}
+function save(){try{localStorage.setItem("chartest",JSON.stringify({answers,page,seed,email,emailStatus}))}catch(e){}}
+function load(){try{const s=JSON.parse(localStorage.getItem("chartest")); if(s){answers=s.answers||{}; page=(typeof s.page==="number")?s.page:-1; if(typeof s.seed==="number")seed=s.seed; if(s.email)email=s.email; if(s.emailStatus)emailStatus=s.emailStatus}}catch(e){}}
+function restart(toPage){answers={}; emailStatus=null; seed=newSeed(); buildOrder(); page=toPage; render()}
 
 function render(){
   const root=document.getElementById("slides");
@@ -274,9 +291,99 @@ function render(){
   const pw=document.getElementById("progressWrap");
   if(page===-1){pw.style.display="none"; root.appendChild(introSlide())}
   else if(page<10){pw.style.display="block"; root.appendChild(questionSlide(page)); updateProgress()}
+  else if(page===10){pw.style.display="none"; root.appendChild(emailSlide())}
   else{pw.style.display="none"; root.appendChild(resultSlide())}
   window.scrollTo({top:0});
   save();
+}
+
+const POPULAR_DOMAINS=["gmail.com","yahoo.com","outlook.com","hotmail.com","icloud.com","mail.ru","yandex.ru","ukr.net","proton.me","protonmail.com","live.com","aol.com"];
+function editDistance(a,b){
+  const m=Array.from({length:a.length+1},(_,i)=>[i,...Array(b.length).fill(0)]);
+  for(let j=0;j<=b.length;j++)m[0][j]=j;
+  for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)
+    m[i][j]=Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
+  return m[a.length][b.length];
+}
+function suggestDomain(dom){
+  if(POPULAR_DOMAINS.includes(dom))return null;
+  let best=null,bd=3;
+  for(const p of POPULAR_DOMAINS){const d=editDistance(dom,p); if(d<bd){bd=d; best=p}}
+  return bd<=2?best:null;
+}
+function emailSyntaxOk(v){
+  return /^[A-Za-z0-9][A-Za-z0-9._%+'-]*@[A-Za-z0-9][A-Za-z0-9.-]*\.[A-Za-z]{2,}$/.test(v)&&!v.includes("..");
+}
+async function domainAcceptsMail(dom){
+  // real deliverability signal from a static page: does the domain publish MX
+  // (or at least A) records; dns.google is keyless and CORS-open
+  try{
+    const mx=await(await fetch("https://dns.google/resolve?name="+encodeURIComponent(dom)+"&type=MX")).json();
+    if(mx.Answer&&mx.Answer.some(a=>a.type===15))return true;
+    const a=await(await fetch("https://dns.google/resolve?name="+encodeURIComponent(dom)+"&type=A")).json();
+    return !!(a.Answer&&a.Answer.length);
+  }catch(e){return null}
+}
+async function sendResultEmail(){
+  if(!EMAIL_CONFIG.serviceId||!EMAIL_CONFIG.templateId||!EMAIL_CONFIG.publicKey){emailStatus="unconfigured";return}
+  const sc=scores();
+  const rows=sc.map(({t,score})=>`${t.name} - ${score} из 100`).join("\n");
+  const tops=sc.slice(0,3).map(({t,score},i)=>
+    `${i+1}. ${t.name} (${score} из 100)\n${t.summary}\nПрезентация типа: ${SITE_URL}${t.file}`).join("\n\n");
+  const message=`Ваш профиль характера\n\n${rows}\n\nВаши ведущие типы:\n\n${tops}\n\nПройти тест ещё раз: ${SITE_URL}\n\nВысокий балл - не диагноз, а карта привычных стратегий.`;
+  try{
+    const r=await fetch("https://api.emailjs.com/api/v1.0/email/send",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({service_id:EMAIL_CONFIG.serviceId,template_id:EMAIL_CONFIG.templateId,
+        user_id:EMAIL_CONFIG.publicKey,
+        template_params:{to_email:email,subject:"Ваш профиль характера",message:message}})});
+    emailStatus=r.ok?"sent":"failed";
+  }catch(e){emailStatus="failed"}
+}
+function emailSlide(){
+  const d=document.createElement("div"); d.className="slide active";
+  d.innerHTML=`
+    <div class="kicker">Почти готово</div>
+    <h1>Куда отправить вашу копию?</h1>
+    <p class="lead">Тест пройден. Оставьте почту, и мы отправим вам копию результата: профиль по девяти типам и ссылки на презентации ваших ведущих типов, чтобы вернуться к ним позже.</p>
+    <div class="intro-card">
+      <label for="emailInput" style="font-weight:600">Ваш email</label>
+      <div class="email-row">
+        <input id="emailInput" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com" value="${email?email.replace(/[^A-Za-z0-9._%+'@-]/g,""):""}">
+        <button class="btn" id="emailBtn">Отправить и показать результат</button>
+      </div>
+      <div class="email-note" id="emailNote"></div>
+    </div>
+    <div class="disclaimer">Адрес используется один раз, только чтобы отправить вам эту копию. Никаких рассылок.</div>
+    <div class="nav"><button class="btn secondary" id="backBtn">Назад</button><span></span></div>`;
+  const input=d.querySelector("#emailInput"), btn=d.querySelector("#emailBtn"), note=d.querySelector("#emailNote");
+  function setNote(cls,html){note.className="email-note"+(cls?" "+cls:""); note.innerHTML=html}
+  async function submit(){
+    const v=input.value.trim().toLowerCase();
+    if(!v){setNote("err","Введите адрес почты."); input.focus(); return}
+    if(!emailSyntaxOk(v)){setNote("err","Похоже, в адресе опечатка. Проверьте формат: name@example.com"); return}
+    const dom=v.split("@")[1];
+    const hint=suggestDomain(dom);
+    if(hint&&note.dataset.hinted!==v){
+      note.dataset.hinted=v;
+      const fixed=v.split("@")[0]+"@"+hint;
+      setNote("err",`Может быть, вы имели в виду <a id="fixDomain">${fixed}</a>? Если адрес верный, нажмите кнопку ещё раз.`);
+      note.querySelector("#fixDomain").onclick=()=>{input.value=fixed; setNote("",""); note.dataset.hinted=""};
+      return;
+    }
+    btn.disabled=true; setNote("","Проверяем адрес...");
+    const mx=await domainAcceptsMail(dom);
+    if(mx===false){btn.disabled=false; setNote("err",`Домен ${dom} не принимает почту. Проверьте адрес.`); return}
+    email=v; save();
+    setNote("ok","Адрес принят. Отправляем письмо...");
+    await sendResultEmail();
+    page=11; render();
+  }
+  btn.onclick=submit;
+  input.addEventListener("keydown",e=>{if(e.key==="Enter")submit()});
+  d.querySelector("#backBtn").onclick=()=>{page=9; render()};
+  input.focus();
+  return d;
 }
 function introSlide(){
   const d=document.createElement("div"); d.className="slide active";
@@ -397,7 +504,11 @@ function scores(){
 function resultSlide(){
   const d=document.createElement("div"); d.className="slide active";
   const sc=scores();
-  let html=`<div class="kicker">Ваш результат</div><h1>Профиль характера</h1>
+  let notice="";
+  if(emailStatus==="sent")notice=`<div class="notice">Копия результата отправлена на ${email}. Если письма нет, загляните в спам.</div>`;
+  else if(emailStatus==="failed")notice=`<div class="notice">Письмо на ${email} отправить не получилось. Результат ниже, сохраните ссылки на презентации.</div>`;
+  else if(emailStatus==="unconfigured")notice=`<div class="notice">Адрес ${email} сохранён. Результат ниже, сохраните ссылки на презентации.</div>`;
+  let html=`<div class="kicker">Ваш результат</div><h1>Профиль характера</h1>${notice}
   <p class="lead">Каждая шкала — от 0 до 100. У большинства людей выражено сразу несколько типов, так что смотрите на два-три верхних: это и есть ваш почерк. Нажмите на строку, чтобы открыть презентацию типа.</p>
   <div style="margin:26px 0">`;
   sc.forEach(({t,score})=>{
