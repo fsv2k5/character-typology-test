@@ -76,6 +76,12 @@ document.documentElement.setAttribute("data-theme",t);})();</script>
   .scale-labels{display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:6px}
   .nav{display:flex; justify-content:space-between; margin-top:26px; gap:12px}
   .hint{color:var(--muted); font-size:13px; margin-top:10px}
+  .radar-card{padding:14px 8px}
+  .radar-card svg{width:100%; height:auto; max-width:580px; display:block; margin:0 auto}
+  .why{margin-top:12px; border-top:1px dashed var(--line); padding-top:10px}
+  .why-t{font-size:13px; color:var(--muted); margin-bottom:4px}
+  .why-q{font-size:14px; font-style:italic; color:var(--ink); margin:7px 0; padding-left:12px; border-left:2px solid var(--line)}
+  .why-q b{font-style:normal; color:var(--accent-ui); font-weight:600}
   .res-row{display:grid; grid-template-columns:220px 1fr 52px; align-items:center; gap:12px; margin:10px 0; cursor:pointer}
   .res-name{font-size:15px}
   .res-track{height:16px; background:var(--card2); border:1px solid var(--line); border-radius:8px; overflow:hidden}
@@ -190,7 +196,7 @@ const TYPES=[
 "Мне свойственно мгновенно превращать любую печаль в гнев или раздражение — либо, наоборот, любой гнев в слёзы и самообвинение.",
 "Я часто чувствую, что моя ценность зависит исключительно от моих достижений, пользы для других или внешней привлекательности.",
 "У меня есть ощущение внутренней пустоты, которую я пытаюсь заполнить едой, покупками, новыми проектами или случайными связями."]},
-{name:"Психопатический (антисоциальный) тип",color:"#96738f",file:"presentations/05-psychopathic.html",
+{name:"Волевой (антисоциальный) тип",color:"#96738f",file:"presentations/05-psychopathic.html",
  summary:"Безопасность для вас — это контроль над ситуацией и собственная автономия: мир воспринимается как конкурентная среда, где важно не оказаться слабым звеном. Ваша сила — хладнокровие под давлением, решительность и умение считывать людей. Точка роста — разрешать себе усталость и уязвимость как естественную часть жизни и выбирать доверие избирательно, вместо настороженности ко всем сразу.",
  statements:[
 "В любой ситуации я быстро понимаю, кто здесь сильнее, а кто слабее, и это влияет на то, как я себя веду.",
@@ -256,6 +262,8 @@ const TYPES=[
 "Во время ссоры или конфликта я замолкаю, «ухожу в себя» и теряю способность говорить или поддерживать зрительный контакт, хотя внутри при этом не равнодушие, а внутренний коллапс.",
 "Мне кажется, что моя «разобранность» и непостоянство — это что-то постыдное, дефект характера или лень, а не защитный механизм психики."]}
 ];
+TYPES.forEach(t=>t.statements=t.statements.map(s=>s.replace(/\.\s*$/,"")));
+const SHORT_NAMES=["Параноидный","Истерический","Шизоидный","Депрессивный","Волевой","Мазохистический","Обсессивный","Нарциссический","Диссоциативный"];
 const SCALE_MIN=0, SCALE_MAX=10, PER_PAGE=9;
 // EmailJS credentials; while any field is empty the address is validated and
 // stored but no mail is sent (emailStatus becomes "unconfigured")
@@ -501,6 +509,41 @@ function scores(){
     return {t, ti, score:s};
   }).sort((a,b)=>b.score-a.score);
 }
+function topStatements(ti,n){
+  return Array.from({length:10},(_,i)=>({s:TYPES[ti].statements[i],v:answers[ti+"-"+i]??0}))
+    .sort((a,b)=>b.v-a.v).slice(0,n);
+}
+function radarSVG(sc){
+  const N=TYPES.length,cx=270,cy=245,R=150;
+  const byTi={}; sc.forEach(x=>byTi[x.ti]=x);
+  const top3=new Set(sc.slice(0,3).map(x=>x.ti));
+  const pt=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/N;return[cx+r*Math.cos(a),cy+r*Math.sin(a)]};
+  const ring=f=>Array.from({length:N},(_,i)=>pt(i,R*f).map(v=>v.toFixed(1)).join(",")).join(" ");
+  let grid="";
+  [0.25,0.5,0.75,1].forEach(f=>{grid+=`<polygon points="${ring(f)}" fill="none" stroke="var(--line)" stroke-width="1"/>`});
+  let axes="",labels="";
+  for(let i=0;i<N;i++){
+    const[ax,ay]=pt(i,R);
+    axes+=`<line x1="${cx}" y1="${cy}" x2="${ax.toFixed(1)}" y2="${ay.toFixed(1)}" stroke="var(--line)" stroke-width="1"/>`;
+    const[lx,ly]=pt(i,R+22);
+    const anchor=Math.abs(lx-cx)<14?"middle":lx>cx?"start":"end";
+    const dy=ly<cy?-4:10;
+    const emph=top3.has(i);
+    labels+=`<text x="${lx.toFixed(1)}" y="${(ly+dy).toFixed(1)}" text-anchor="${anchor}" font-size="12.5" font-weight="${emph?"700":"400"}" fill="${emph?TYPES[i].color:"var(--muted)"}">${SHORT_NAMES[i]}</text>
+    <text x="${lx.toFixed(1)}" y="${(ly+dy+14).toFixed(1)}" text-anchor="${anchor}" font-size="11.5" fill="var(--muted)">${byTi[i].score}</text>`;
+  }
+  const poly=Array.from({length:N},(_,i)=>pt(i,Math.max(6,R*byTi[i].score/100)).map(v=>v.toFixed(1)).join(",")).join(" ");
+  let dots="";
+  sc.slice(0,3).forEach(({ti,t,score})=>{
+    const[x,y]=pt(ti,Math.max(6,R*score/100));
+    dots+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5.5" fill="${t.color}" stroke="var(--card)" stroke-width="2"/>`;
+  });
+  return `<svg viewBox="-20 0 580 505" role="img" aria-label="Профиль по девяти типам характера">
+    ${grid}${axes}
+    <polygon points="${poly}" fill="var(--accent)" fill-opacity="0.18" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>
+    ${dots}${labels}
+  </svg>`;
+}
 function resultSlide(){
   const d=document.createElement("div"); d.className="slide active";
   const sc=scores();
@@ -509,25 +552,28 @@ function resultSlide(){
   else if(emailStatus==="failed")notice=`<div class="notice">Письмо на ${email} отправить не получилось. Результат ниже, сохраните ссылки на презентации.</div>`;
   else if(emailStatus==="unconfigured")notice=`<div class="notice">Адрес ${email} сохранён. Результат ниже, сохраните ссылки на презентации.</div>`;
   let html=`<div class="kicker">Ваш результат</div><h1>Профиль характера</h1>${notice}
-  <p class="lead">Каждая шкала — от 0 до 100. У большинства людей выражено сразу несколько типов, так что смотрите на два-три верхних: это и есть ваш почерк. Нажмите на строку, чтобы открыть презентацию типа.</p>
-  <div style="margin:26px 0">`;
-  sc.forEach(({t,score})=>{
+  <p class="lead">Чем дальше точка от центра, тем сильнее выражен тип. Три ведущих выделены цветом — они и складываются в ваш почерк.</p>
+  <div class="card radar-card">${radarSVG(sc)}</div>
+  <h2>Ваши ведущие типы — и почему</h2>`;
+  sc.slice(0,3).forEach(({t,ti,score},i)=>{
+    const why=topStatements(ti,2).map(x=>`<div class="why-q">«${x.s}» — <b>${x.v}/10</b></div>`).join("");
+    html+=`<div class="top-card" style="border-left-color:${t.color}">
+      <div class="rank">${i+1} место — ${score} из 100</div>
+      <h3>${t.name}</h3>
+      <p>${t.summary}</p>
+      <div class="why"><div class="why-t">Сильнее всего у вас откликнулось:</div>${why}</div>
+      <p><a href="${t.file}">Открыть презентацию типа →</a></p>
+    </div>`;
+  });
+  html+=`<h2>Остальные шкалы</h2><div style="margin:14px 0 26px">`;
+  sc.slice(3).forEach(({t,score})=>{
     html+=`<div class="res-row" onclick="location.href='${t.file}'">
       <div class="res-name">${t.name}</div>
       <div class="res-track"><div class="res-fill" style="background:${t.color}" data-w="${score}"></div></div>
       <div class="res-val">${score}</div>
     </div>`;
   });
-  html+=`</div><h2>Ваши ведущие типы</h2>`;
-  sc.slice(0,3).forEach(({t,score},i)=>{
-    html+=`<div class="top-card" style="border-left-color:${t.color}">
-      <div class="rank">${i+1} место — ${score} из 100</div>
-      <h3>${t.name}</h3>
-      <p>${t.summary}</p>
-      <p><a href="${t.file}">Открыть презентацию типа →</a></p>
-    </div>`;
-  });
-  html+=`<div class="disclaimer">Высокий балл — не диагноз, а карта привычных стратегий. Если какие-то черты всерьёз мешают жить, лучше обсудить это со специалистом, чем воевать с собой.</div>
+  html+=`</div><div class="disclaimer">Высокий балл — не диагноз, а карта привычных стратегий. Если какие-то черты всерьёз мешают жить, лучше обсудить это со специалистом, чем воевать с собой.</div>
   <button class="btn secondary" id="againBtn">Пройти заново</button>`;
   d.innerHTML=html;
   d.querySelector("#againBtn").onclick=()=>restart(-1);
