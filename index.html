@@ -30,6 +30,7 @@ document.documentElement.setAttribute("data-theme",t);})();</script>
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
   html{-webkit-text-size-adjust:100%}
   html,body{height:100%}
+    html.in-frame,html.in-frame body{height:auto;min-height:100%}
   body{
     background:radial-gradient(1200px 800px at 70% -10%, var(--bg-grad) 0%, var(--bg) 55%);
     color:var(--ink); font-family:"Inter","SF Pro Text",-apple-system,"Segoe UI",Roboto,Arial,sans-serif; font-size:16.5px; line-height:1.6;
@@ -267,8 +268,8 @@ const SHORT_NAMES=["Параноидный","Истерический","Шизо
 const SCALE_MIN=0, SCALE_MAX=10, PER_PAGE=9;
 // EmailJS credentials; while any field is empty the address is validated and
 // stored but no mail is sent (emailStatus becomes "unconfigured")
-const EMAIL_CONFIG={serviceId:"",templateId:"",publicKey:""};
-const SITE_URL="https://fsv2k5.github.io/character-typology-test/";
+const EMAIL_CONFIG={serviceId:"service_9025hvd",templateId:"template_65dcoo9",publicKey:"XIkbF6BMJH2ZIvO2t"};
+const SITE_URL="https://elenamiropsy.com/test/";
 let answers={}, page=-1, seed=null; // -1 intro, 0..9 questions, 10 email, 11 results
 let email=null, emailStatus=null; // sent | failed | unconfigured
 const order=[]; // interleaved statement order, unique per respondent
@@ -303,6 +304,21 @@ function render(){
   else{pw.style.display="none"; root.appendChild(resultSlide())}
   window.scrollTo({top:0});
   save();
+  reportHeight();
+}
+
+// When embedded in an iframe (Tilda /test), tell the parent how tall we are so
+// it can resize the frame; without this the last screens get clipped.
+function reportHeight(){
+  if(window.parent===window) return;
+  document.documentElement.classList.add("in-frame");
+  const send=()=>{
+    const h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);
+    try{window.parent.postMessage({type:"ctt:height",height:h},"*")}catch(e){}
+  };
+  send();
+  requestAnimationFrame(send);
+  setTimeout(send,400);
 }
 
 const POPULAR_DOMAINS=["gmail.com","yahoo.com","outlook.com","hotmail.com","icloud.com","mail.ru","yandex.ru","ukr.net","proton.me","protonmail.com","live.com","aol.com"];
