@@ -1,10 +1,14 @@
 <!-- Character typology test: paste into Tilda block T123 on page /test -->
-<div id="ctt-wrap" style="width:100%;max-width:900px;margin:0 auto">
+<style>
+  /* Break out of Tilda's column container so the test spans the full page. */
+  #ctt-wrap { width: 100vw; margin-left: calc(50% - 50vw); }
+  #ctt-frame { width: 100%; border: 0; display: block; }
+</style>
+<div id="ctt-wrap">
   <iframe id="ctt-frame"
           src="https://fsv2k5.github.io/character-typology-test/"
           title="Тест: какой у вас тип характера"
-          loading="lazy"
-          style="width:100%;height:820px;border:0;display:block;overflow:hidden"
+          style="height:100vh"
           scrolling="no"
           allow="clipboard-write"></iframe>
 </div>
@@ -13,22 +17,14 @@
   var frame = document.getElementById("ctt-frame");
   if (!frame) return;
 
-  // The test posts its content height on every screen change; resize to match
-  // so the page never shows an inner scrollbar or clips a long question list.
+  // The test posts its content height on every screen change. Grow to fit, but
+  // never shrink below the viewport, so short screens do not leave a gap.
   window.addEventListener("message", function (e) {
-    if (!/fsv2k5\.github\.io/.test(e.origin)) return;
+    if (e.origin !== "https://fsv2k5.github.io") return;
     var d = e.data;
     if (!d || d.type !== "ctt:height") return;
     var h = parseInt(d.height, 10);
-    if (h > 0) frame.style.height = Math.max(h, 480) + "px";
+    if (h > 0) frame.style.height = Math.max(h, window.innerHeight) + "px";
   });
-
-  // Fallback for viewports where no message arrives (older browsers, blocked
-  // postMessage): keep a sane height tied to the window instead of a fixed one.
-  setTimeout(function () {
-    if (frame.style.height === "820px") {
-      frame.style.height = Math.max(window.innerHeight - 120, 640) + "px";
-    }
-  }, 1500);
 })();
 </script>
