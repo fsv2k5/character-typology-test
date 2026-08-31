@@ -22,7 +22,14 @@
   window.addEventListener("message", function (e) {
     if (e.origin !== "https://fsv2k5.github.io") return;
     var d = e.data;
-    if (!d || d.type !== "ctt:height") return;
+    if (!d || !d.type) return;
+    if (d.type === "ctt:top") {
+      // a presentation just opened inside the frame: bring the parent page back
+      // to the top, otherwise the visitor lands mid-page with no way to scroll up
+      try { window.scrollTo({ top: frame.offsetTop - 20, behavior: "auto" }); } catch (e) {}
+      return;
+    }
+    if (d.type !== "ctt:height") return;
     var h = parseInt(d.height, 10);
     if (h > 0) frame.style.height = Math.max(h, window.innerHeight) + "px";
   });
