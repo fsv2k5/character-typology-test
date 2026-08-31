@@ -9,7 +9,6 @@
           src="https://fsv2k5.github.io/character-typology-test/"
           title="Тест: какой у вас тип характера"
           style="height:100vh"
-          scrolling="no"
           allow="clipboard-write"></iframe>
 </div>
 <script>
@@ -17,8 +16,9 @@
   var frame = document.getElementById("ctt-frame");
   if (!frame) return;
 
-  // The test posts its content height on every screen change. Grow to fit, but
-  // never shrink below the viewport, so short screens do not leave a gap.
+  // The test posts its content height on every screen change. Grow to fit so
+  // the page scrolls as one; until that message arrives the frame keeps its
+  // own scrollbar, so content is never unreachable.
   window.addEventListener("message", function (e) {
     if (e.origin !== "https://fsv2k5.github.io") return;
     var d = e.data;
