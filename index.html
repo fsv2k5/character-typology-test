@@ -266,7 +266,7 @@ const SCALE_MIN=0, SCALE_MAX=10, PER_PAGE=9;
 // EmailJS credentials; while any field is empty the address is validated and
 // stored but no mail is sent (emailStatus becomes "unconfigured")
 const EMAIL_CONFIG={serviceId:"service_9025hvd",templateId:"template_65dcoo9",publicKey:"XIkbF6BMJH2ZIvO2t"};
-const SITE_URL="https://elenamiropsy.com/test/";
+const SITE_URL="https://fsv2k5.github.io/character-typology-test/";
 let answers={}, page=-1, seed=null; // -1 intro, 0..9 questions, 10 email, 11 results
 let email=null, emailStatus=null; // sent | failed | unconfigured
 const order=[]; // interleaved statement order, unique per respondent
@@ -361,7 +361,7 @@ function emailHTML(sc){
   const bars=sc.map(({t,score})=>{
     const pct=Math.max(0,Math.min(100,score));
     return `<tr>
-      <td style="padding:7px 0;font:400 15px ${SANS};color:${INK};width:210px">${esc(t.name)}</td>
+      <td style="padding:7px 0;font:400 15px ${SANS};width:210px"><a href="${SITE_URL}${t.file}" style="color:${INK};text-decoration:none">${esc(t.name)}</a></td>
       <td style="padding:7px 10px"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${CARD2};border:1px solid ${LINE};border-radius:8px"><tr><td style="padding:0">
         <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${pct}%" style="width:${pct}%"><tr><td style="background:${t.color};height:14px;border-radius:8px;font-size:0;line-height:14px">&nbsp;</td></tr></table>
       </td></tr></table></td>
@@ -376,6 +376,7 @@ function emailHTML(sc){
       <div style="font:400 19px ${SERIF};color:${INK};margin:6px 0 0">${esc(t.name)}</div>
       <div style="font:400 15px ${SANS};color:${MUTED};margin-top:8px;line-height:1.55">${esc(t.summary)}</div>
       <div style="margin-top:12px;border-top:1px dashed ${LINE};padding-top:10px"><div style="font:400 13px ${SANS};color:${MUTED};margin-bottom:4px">Сильнее всего у вас откликнулось:</div>${q}</div>
+      <div style="margin-top:14px"><a href="${SITE_URL}${t.file}" style="font:600 14px ${SANS};color:${ACC};text-decoration:none">Открыть презентацию типа -&gt;</a></div>
     </td></tr></table>`;
   }).join("");
   return `<div style="margin:0;padding:0;background:${BG}"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${BG}"><tr><td align="center" style="padding:28px 12px">
