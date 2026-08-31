@@ -81,8 +81,8 @@ document.documentElement.setAttribute("data-theme",t);})();</script>
   .why-t{font-size:13px; color:var(--muted); margin-bottom:4px}
   .why-q{font-size:14px; font-style:italic; color:var(--ink); margin:7px 0; padding-left:12px; border-left:2px solid var(--line)}
   .why-q b{font-style:normal; color:var(--accent-ui); font-weight:600}
-  .res-row{display:grid; grid-template-columns:220px 1fr 52px; align-items:center; gap:12px; margin:10px 0; cursor:pointer}
-  .res-name{font-size:15px}
+  .res-row{display:grid; grid-template-columns:minmax(0,max-content) 1fr 52px; align-items:center; gap:12px; margin:10px 0; cursor:pointer}
+  .res-name{font-size:15px; white-space:nowrap}
   .res-track{height:16px; background:var(--card2); border:1px solid var(--line); border-radius:8px; overflow:hidden}
   .res-fill{height:100%; border-radius:8px; width:0; transition:width .8s ease}
   .res-val{font-size:14px; color:var(--muted); text-align:right}
@@ -118,7 +118,7 @@ document.documentElement.setAttribute("data-theme",t);})();</script>
     .nav{gap:10px}
     .nav .btn{width:auto; flex:1}
     .res-row{grid-template-columns:1fr 44px; row-gap:4px}
-    .res-name{grid-column:1/-1; margin-bottom:0}
+    .res-name{grid-column:1/-1; margin-bottom:0; white-space:normal}
     .theme-toggle{top:10px; right:10px; width:38px; height:38px}
     .progress-wrap{padding:10px 0 8px}
     .intro-card{padding:16px 16px}
@@ -309,6 +309,11 @@ function render(){
 function reportHeight(){
   if(window.parent===window) return;
   document.documentElement.classList.add("in-frame");
+  if(!reportHeight.announced){
+    reportHeight.announced=true;
+    // arriving back from a presentation: ask the host page to scroll to the frame
+    try{window.parent.postMessage({type:"ctt:top"},"*")}catch(e){}
+  }
   const send=()=>{
     const h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);
     try{window.parent.postMessage({type:"ctt:height",height:h},"*")}catch(e){}
