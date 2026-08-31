@@ -345,19 +345,54 @@ async function domainAcceptsMail(dom){
     return !!(a.Answer&&a.Answer.length);
   }catch(e){return null}
 }
+// Email clients drop CSS variables, grid and <style>, so the on-screen result
+// is rebuilt with tables + inline styles. Palette mirrors the light theme.
+function emailHTML(sc){
+  const INK="#2e2c28",MUTED="#6f6d64",LINE="#e2ddd0",BG="#f6f3ec",CARD="#ffffff",
+        CARD2="#f1eee6",ACC="#4e6b49",WBG="#faf5e8",WLN="#ddc9a0",WINK="#7c6a3a",
+        SERIF="Literata,'PT Serif',Georgia,serif",
+        SANS="Inter,-apple-system,'Segoe UI',Roboto,Arial,sans-serif";
+  const esc=t=>String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const bars=sc.map(({t,score})=>{
+    const pct=Math.max(0,Math.min(100,score));
+    return `<tr>
+      <td style="padding:7px 0;font:400 15px ${SANS};color:${INK};width:210px">${esc(t.name)}</td>
+      <td style="padding:7px 10px"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${CARD2};border:1px solid ${LINE};border-radius:8px"><tr><td style="padding:0">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${pct}%" style="width:${pct}%"><tr><td style="background:${t.color};height:14px;border-radius:8px;font-size:0;line-height:14px">&nbsp;</td></tr></table>
+      </td></tr></table></td>
+      <td style="padding:7px 0;font:400 14px ${SANS};color:${MUTED};text-align:right;width:44px">${pct}</td>
+    </tr>`;
+  }).join("");
+  const cards=sc.slice(0,3).map(({t,ti,score},i)=>{
+    const q=topStatements(ti,2).map(x=>
+      `<div style="font:italic 400 14px ${SANS};color:${INK};margin:8px 0;padding-left:12px;border-left:2px solid ${LINE}">&laquo;${esc(x.s)}&raquo; &mdash; <b>${x.v}/10</b></div>`).join("");
+    return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${CARD};border:1px solid ${LINE};border-left:4px solid ${t.color};border-radius:14px;margin:16px 0"><tr><td style="padding:20px 22px">
+      <div style="font:600 12px ${SANS};letter-spacing:2px;text-transform:uppercase;color:${ACC}">${i+1} место &mdash; ${score} из 100</div>
+      <div style="font:400 19px ${SERIF};color:${INK};margin:6px 0 0">${esc(t.name)}</div>
+      <div style="font:400 15px ${SANS};color:${MUTED};margin-top:8px;line-height:1.55">${esc(t.summary)}</div>
+      <div style="margin-top:12px;border-top:1px dashed ${LINE};padding-top:10px"><div style="font:400 13px ${SANS};color:${MUTED};margin-bottom:4px">Сильнее всего у вас откликнулось:</div>${q}</div>
+    </td></tr></table>`;
+  }).join("");
+  return `<div style="margin:0;padding:0;background:${BG}"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${BG}"><tr><td align="center" style="padding:28px 12px">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="640" style="width:640px;max-width:100%;background:${CARD};border:1px solid ${LINE};border-radius:18px"><tr><td style="padding:32px 34px">
+      <div style="font:600 12px ${SANS};letter-spacing:2.5px;text-transform:uppercase;color:${ACC}">Ваш результат</div>
+      <h1 style="font:400 30px ${SERIF};color:${INK};margin:10px 0 14px">Профиль характера</h1>
+      <p style="font:400 15.5px ${SANS};color:${MUTED};line-height:1.6;margin:0 0 22px">Каждая шкала &mdash; от 0 до 100. У большинства людей выражено сразу несколько типов, так что смотрите на два-три верхних: это и есть ваш почерк.</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 30px">${bars}</table>
+      <h2 style="font:400 22px ${SERIF};color:${INK};margin:0 0 6px">Ваши ведущие типы &mdash; и почему</h2>
+      ${cards}
+      <div style="background:${WBG};border:1px solid ${WLN};color:${WINK};border-radius:12px;padding:14px 18px;font:400 14px ${SANS};line-height:1.55;margin:24px 0 0">Высокий балл &mdash; не диагноз, а карта привычных стратегий. Если какие-то черты всерьёз мешают жить, лучше обсудить это со специалистом, чем воевать с собой.</div>
+    </td></tr></table>
+  </td></tr></table></div>`;
+}
 async function sendResultEmail(){
   if(!EMAIL_CONFIG.serviceId||!EMAIL_CONFIG.templateId||!EMAIL_CONFIG.publicKey){emailStatus="unconfigured";return}
-  const sc=scores();
-  const rows=sc.map(({t,score})=>`${t.name} - ${score} из 100`).join("\n");
-  const tops=sc.slice(0,3).map(({t,score},i)=>
-    `${i+1}. ${t.name} (${score} из 100)\n${t.summary}\nПрезентация типа: ${SITE_URL}${t.file}`).join("\n\n");
-  const message=`Ваш профиль характера\n\n${rows}\n\nВаши ведущие типы:\n\n${tops}\n\nПройти тест ещё раз: ${SITE_URL}\n\nВысокий балл - не диагноз, а карта привычных стратегий.`;
   try{
     const r=await fetch("https://api.emailjs.com/api/v1.0/email/send",{
       method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({service_id:EMAIL_CONFIG.serviceId,template_id:EMAIL_CONFIG.templateId,
         user_id:EMAIL_CONFIG.publicKey,
-        template_params:{to_email:email,subject:"Ваш профиль характера",message:message}})});
+        template_params:{to_email:email,subject:"Ваш профиль характера",message:emailHTML(scores())}})});
     emailStatus=r.ok?"sent":"failed";
   }catch(e){emailStatus="failed"}
 }
