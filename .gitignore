@@ -1,2 +1,9 @@
 sources/
 .DS_Store
+
+# Secrets: never commit. Tilda API keys live in ~/.claude/secrets/, not here.
+.env
+.env.*
+!.env.example
+*.key
+*.secret
