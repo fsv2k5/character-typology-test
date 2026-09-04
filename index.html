@@ -83,6 +83,10 @@ document.documentElement.setAttribute("data-theme",t);})();</script>
   .why-q b{font-style:normal; color:var(--accent-ui); font-weight:600}
   .res-row{display:grid; grid-template-columns:340px 1fr 52px; align-items:center; gap:12px; margin:10px 0; cursor:pointer}
   .res-name{font-size:15px; white-space:nowrap}
+  .res-link{color:var(--accent-ui); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px}
+  .res-arrow{color:var(--accent-ui); opacity:.75; margin-left:2px}
+  .res-row:hover .res-link{text-decoration-thickness:2px}
+  .res-row:hover .res-arrow{opacity:1}
   .res-track{height:16px; background:var(--card2); border:1px solid var(--line); border-radius:8px; overflow:hidden}
   .res-fill{height:100%; border-radius:8px; width:0; transition:width .8s ease}
   .res-val{font-size:14px; color:var(--muted); text-align:right}
@@ -695,13 +699,12 @@ function resultSlide(){
   let notice="";
   if(emailStatus==="sent")notice=`<div class="notice">${T().sentTo(email)}</div>`;
   else if(emailStatus==="failed")notice=`<div class="notice">${T().sendFailed(email)}</div>`;
-  else if(emailStatus==="unconfigured")notice=`<div class="notice">${T().savedOnly(email)}</div>`;
   let html=`<div class="kicker">${T().kickerResult}</div><h1>${T().resultH1}</h1>${notice}
   <p class="lead">${T().resultLead}</p>
   <div style="margin:26px 0">`;
   sc.forEach(({t,score})=>{
     html+=`<div class="res-row" onclick="location.href='${typeHref(t.file)}'">
-      <div class="res-name">${t.name}</div>
+      <div class="res-name"><span class="res-link">${t.name}</span> <span class="res-arrow">-&gt;</span></div>
       <div class="res-track"><div class="res-fill" style="background:${t.color}" data-w="${score}"></div></div>
       <div class="res-val">${score}</div>
     </div>`;
