@@ -239,6 +239,10 @@ en:[
  summary:"You are driven by a need for presence - to feel, to remember, to be whole - but your mind has learned to protect you by muting reality at moments of overload. Your strength is a cool head and clarity where others lose their footing, along with deep concentration and a rich imagination. Your growth point is gently rebuilding trust in your own sensations and body, restoring your connection to yourself and to others step by step.",
  statements:["In a stressful situation, I feel like I'm watching myself and my own life from the outside, like an audience member at a film, rather than someone taking part in it.","I tend to act on autopilot - get somewhere or finish a task and then not remember exactly how I did it.","In an acute, stressful situation, I don't panic along with everyone else - I go ice-cold and calm and feel almost nothing, while everyone around me is reacting emotionally.","I sometimes have gaps in my memory: I can't recall important conversations or events that happened quite recently.","I sometimes find it hard to sense the boundaries of my own body: I may not notice pain, hunger, or exhaustion even when they should objectively be intense.","Looking in the mirror, I sometimes fail to recognize my own reflection for a split second, or it feels like it belongs to someone else.","I have a rich imagination, and I tend to sink into fantasy worlds so deeply that reality temporarily fades into the background.","People around me sometimes say I act like a different person - my voice, my manner of speaking, or my behavior changes abruptly, and I'm later surprised by my own actions.","During an argument or conflict, I go quiet, withdraw into myself, and lose the ability to speak or hold eye contact, even though inside it's not indifference but an internal collapse.","I feel like my \"falling apart\" and inconsistency are something shameful, a character flaw or laziness, rather than a protective mechanism of the mind."]}]};
 let TYPES=[];
+// Presentations live in presentations/<lang>/ for uk and en; ru stays at the root.
+function typeHref(file){
+  return lang==="ru" ? file : file.replace("presentations/","presentations/"+lang+"/");
+}
 function syncTypes(){
   const src=TYPE_TEXT[lang]||TYPE_TEXT.ru;
   TYPES=src.map((t,i)=>({name:t.name, summary:t.summary,
@@ -490,7 +494,7 @@ function emailHTML(sc){
   const bars=sc.map(({t,score})=>{
     const pct=Math.max(0,Math.min(100,score));
     return `<tr>
-      <td style="padding:7px 0;font:400 15px ${SANS};width:210px"><a href="${SITE_URL}${t.file}" style="color:${INK};text-decoration:none">${esc(t.name)}</a></td>
+      <td style="padding:7px 0;font:400 15px ${SANS};width:210px"><a href="${SITE_URL}${typeHref(t.file)}" style="color:${INK};text-decoration:none">${esc(t.name)}</a></td>
       <td style="padding:7px 10px"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${CARD2};border:1px solid ${LINE};border-radius:8px"><tr><td style="padding:0">
         <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${pct}%" style="width:${pct}%"><tr><td style="background:${t.color};height:14px;border-radius:8px;font-size:0;line-height:14px">&nbsp;</td></tr></table>
       </td></tr></table></td>
@@ -505,7 +509,7 @@ function emailHTML(sc){
       <div style="font:400 19px ${SERIF};color:${INK};margin:6px 0 0">${esc(t.name)}</div>
       <div style="font:400 15px ${SANS};color:${MUTED};margin-top:8px;line-height:1.55">${esc(t.summary)}</div>
       <div style="margin-top:12px;border-top:1px dashed ${LINE};padding-top:10px"><div style="font:400 13px ${SANS};color:${MUTED};margin-bottom:4px">${T().resonated}</div>${q}</div>
-      <div style="margin-top:14px"><a href="${SITE_URL}${t.file}" style="font:600 14px ${SANS};color:${ACC};text-decoration:none">${T().openPresentation} -&gt;</a></div>
+      <div style="margin-top:14px"><a href="${SITE_URL}${typeHref(t.file)}" style="font:600 14px ${SANS};color:${ACC};text-decoration:none">${T().openPresentation} -&gt;</a></div>
     </td></tr></table>`;
   }).join("");
   return `<div style="margin:0;padding:0;background:${BG}"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${BG}"><tr><td align="center" style="padding:28px 12px">
@@ -696,7 +700,7 @@ function resultSlide(){
   <p class="lead">${T().resultLead}</p>
   <div style="margin:26px 0">`;
   sc.forEach(({t,score})=>{
-    html+=`<div class="res-row" onclick="location.href='${t.file}'">
+    html+=`<div class="res-row" onclick="location.href='${typeHref(t.file)}'">
       <div class="res-name">${t.name}</div>
       <div class="res-track"><div class="res-fill" style="background:${t.color}" data-w="${score}"></div></div>
       <div class="res-val">${score}</div>
@@ -710,7 +714,7 @@ function resultSlide(){
       <h3>${t.name}</h3>
       <p>${t.summary}</p>
       <div class="why"><div class="why-t">${T().resonated}</div>${why}</div>
-      <p><a href="${t.file}">${T().openPresentation} -&gt;</a></p>
+      <p><a href="${typeHref(t.file)}">${T().openPresentation} -&gt;</a></p>
     </div>`;
   });
   html+=`<div class="disclaimer">${T().closing}</div>
