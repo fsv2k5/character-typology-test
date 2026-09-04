@@ -7,3 +7,11 @@ sources/
 !.env.example
 *.key
 *.secret
+
+# IDE
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
