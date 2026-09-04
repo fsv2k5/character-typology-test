@@ -92,6 +92,8 @@ document.documentElement.setAttribute("data-theme",t);})();</script>
   .top-card .rank{font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--accent-ui); font-weight:600}
   .top-card p{color:var(--muted); font-size:15px; margin-top:8px}
   .top-card a{color:var(--accent-ui)}
+  .cta-card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px 24px; margin:18px 0 6px}
+  .cta-card p{color:var(--muted); font-size:15px; margin-bottom:16px}
   .disclaimer{background:var(--warn-bg); border:1px solid var(--warn-line); color:var(--warn-ink);
     border-radius:12px; padding:14px 18px; font-size:14px; margin:22px 0}
   .notice{background:color-mix(in srgb, var(--accent) 10%, var(--card)); border:1px solid color-mix(in srgb, var(--accent) 45%, var(--line));
@@ -267,6 +269,7 @@ const SCALE_MIN=0, SCALE_MAX=10, PER_PAGE=9;
 // stored but no mail is sent (emailStatus becomes "unconfigured")
 const EMAIL_CONFIG={serviceId:"service_9025hvd",templateId:"template_65dcoo9",publicKey:"XIkbF6BMJH2ZIvO2t"};
 const SITE_URL="https://fsv2k5.github.io/character-typology-test/";
+const ARCHIVE_EMAIL="elena.miro.psy@gmail.com"; // every result is copied here
 let answers={}, page=-1, seed=null; // -1 intro, 0..9 questions, 10 email, 11 results
 let email=null, emailStatus=null; // sent | failed | unconfigured
 const order=[]; // interleaved statement order, unique per respondent
@@ -394,12 +397,17 @@ function emailHTML(sc){
 async function sendResultEmail(){
   if(!EMAIL_CONFIG.serviceId||!EMAIL_CONFIG.templateId||!EMAIL_CONFIG.publicKey){emailStatus="unconfigured";return}
   try{
-    const r=await fetch("https://api.emailjs.com/api/v1.0/email/send",{
+    const html=emailHTML(scores());
+    const post=(to,subject)=>fetch("https://api.emailjs.com/api/v1.0/email/send",{
       method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({service_id:EMAIL_CONFIG.serviceId,template_id:EMAIL_CONFIG.templateId,
         user_id:EMAIL_CONFIG.publicKey,
-        template_params:{to_email:email,subject:"Ваш профиль характера",message:emailHTML(scores())}})});
+        template_params:{to_email:to,subject:subject,message:html}})});
+    const r=await post(email,"Ваш профиль характера");
     emailStatus=r.ok?"sent":"failed";
+    // separate archive copy for the practice; the subject carries the recipient
+    // so the archive is searchable. Its failure must not affect the visitor.
+    try{await post(ARCHIVE_EMAIL,"Копия результата: "+email)}catch(e){}
   }catch(e){emailStatus="failed"}
 }
 function emailSlide(){
@@ -453,17 +461,17 @@ function introSlide(){
   d.innerHTML=`
     <div class="kicker">Самоисследование характера</div>
     <h1>Какой у вас тип характера?</h1>
-    <p class="lead">Девяносто утверждений о том, как вы обычно чувствуете, думаете и поступаете. В конце вы увидите свой профиль по девяти типам характера и поймёте, какие из них у вас выражены сильнее.</p>
+    <p class="lead">В этом тесте 90 утверждений о том, как вы обычно думаете, чувствуете и действуете. По итогу мы составим ваш профиль по 9 типам характера, чтобы вы увидели свои самые яркие черты.</p>
     <div class="intro-card">
-      <strong>Как проходить</strong>
+      <strong>Пару слов перед стартом</strong>
       <ul>
-        <li>Оценивайте каждое утверждение от 0 («совсем не про меня») до 10 («полностью про меня»).</li>
-        <li>Отвечайте про себя обычного, а не про то, каким хочется быть.</li>
-        <li>Плохих типов здесь нет. У каждого свои сильные стороны и свои уязвимые места.</li>
-        <li>Займёт минут пятнадцать-двадцать. Прогресс сохраняется, можно вернуться позже.</li>
+        <li>Оценивайте утверждения от 0 (&laquo;вообще не про меня&raquo;) до 10 (&laquo;это точно я&raquo;).</li>
+        <li>Выбирайте ответы про себя реального, а не про того, каким хотелось бы быть.</li>
+        <li>Здесь нет правильных, неправильных или &laquo;плохих&raquo; типов. У каждого характера есть своя сила и своя уязвимость.</li>
+        <li>Это инструмент самопознания, а не медицинский диагноз. Мы исследуем ваш уникальный психологический почерк.</li>
       </ul>
     </div>
-    <div class="disclaimer">Это инструмент самопознания, а не диагностика. Тип характера - устойчивый почерк здоровой личности, а не расстройство.</div>
+    <div class="disclaimer">Прохождение займет около 15-20 минут. Не переживайте, если нужно отвлечься - прогресс сохранится, и вы сможете вернуться к тесту позже.</div>
     <button class="btn" id="startBtn">${done>0?"Продолжить":"Начать тест"}</button>
     ${done>0?'<button class="btn secondary" id="resetBtn" style="margin-left:10px">Начать заново</button>':""}
   `;
@@ -595,7 +603,11 @@ function resultSlide(){
       <p><a href="${t.file}">Открыть презентацию типа →</a></p>
     </div>`;
   });
-  html+=`<div class="disclaimer">Высокий балл - не диагноз, а карта привычных стратегий. Если какие-то черты всерьёз мешают жить, лучше обсудить это со специалистом, чем воевать с собой.</div>
+  html+=`<div class="disclaimer">Высокий балл - это не диагноз. Это подробная карта ваших привычных жизненных стратегий и защит. Знать свой тип характера полезно, но настоящее качество жизни меняется тогда, когда вы перестаете воевать со своими уязвимостями и учитесь ими управлять.</div>
+  <div class="cta-card">
+    <p>Если вы чувствуете, что какие-то паттерны всерьез вас тормозят, забирают энергию или усложняют отношения, приглашаю вас на короткую ознакомительную встречу. Мы предметно разберем ваш профиль: переведем сухие результаты на язык вашей реальной жизни и обсудим, как перестать проваливаться в привычные сценарии и начать опираться на свою настоящую силу.</p>
+    <a class="btn" href="https://elenamiropsy.com" target="_blank" rel="noopener">Записаться на встречу</a>
+  </div>
   <button class="btn secondary" id="againBtn">Пройти заново</button>`;
   d.innerHTML=html;
   d.querySelector("#againBtn").onclick=()=>restart(-1);
