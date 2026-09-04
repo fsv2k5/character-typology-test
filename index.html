@@ -126,15 +126,20 @@ document.documentElement.setAttribute("data-theme",t);})();</script>
     .intro-card{padding:16px 16px}
   }
 
-  .theme-toggle{position:fixed; top:16px; right:16px; z-index:50; width:42px; height:42px; border-radius:50%;
-    border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; font-size:17px;
-    display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px var(--shadow)}
-  .theme-toggle:hover{border-color:var(--accent)}
+  .corner-toggles{position:fixed; top:16px; right:18px; z-index:20; display:flex; gap:8px}
+  .corner-toggles button{width:38px; height:38px; display:flex; align-items:center; justify-content:center;
+    background:var(--card); color:var(--muted); border:1px solid var(--line); border-radius:10px; cursor:pointer;
+    font-family:inherit; font-size:12px; font-weight:700; letter-spacing:.5px; transition:color .2s, border-color .2s}
+  .corner-toggles button:hover{color:var(--ink); border-color:var(--accent)}
+  @media (max-width:560px){.corner-toggles{top:10px; right:10px}}
 
 </style>
 </head>
 <body>
-<button class="theme-toggle" id="themeToggle" title="Сменить тему"></button>
+<div class="corner-toggles">
+  <button class="lang-toggle" id="langToggle" title="Change language"></button>
+  <button class="theme-toggle" id="themeToggle" title="Change theme"></button>
+</div>
 <div class="app">
   <div class="progress-wrap" id="progressWrap" style="display:none">
     <div class="progress-meta"><span id="stepLabel"></span><span id="answeredLabel"></span></div>
@@ -264,6 +269,151 @@ const TYPES=[
 "Мне кажется, что моя «разобранность» и непостоянство - это что-то постыдное, дефект характера или лень, а не защитный механизм психики."]}
 ];
 TYPES.forEach(t=>t.statements=t.statements.map(s=>s.replace(/\.\s*$/,"")));
+const LANGS=["ru","uk","en"];
+const UI={
+ru:{
+  htmlLang:"ru", title:"Тест: профиль характера",
+  themeTitle:"Сменить тему", langTitle:"Змінити мову / Change language",
+  kickerIntro:"Самоисследование характера",
+  introH1:"Какой у вас тип характера?",
+  introLead:"В этом тесте 90 утверждений о том, как вы обычно думаете, чувствуете и действуете. По итогу мы составим ваш профиль по 9 типам характера, чтобы вы увидели свои самые яркие черты.",
+  introCardTitle:"Пару слов перед стартом",
+  introBullets:["Оценивайте утверждения от 0 (&laquo;вообще не про меня&raquo;) до 10 (&laquo;это точно я&raquo;).","Выбирайте ответы про себя реального, а не про того, каким хотелось бы быть.","Здесь нет правильных, неправильных или &laquo;плохих&raquo; типов. У каждого характера есть своя сила и своя уязвимость.","Это инструмент самопознания, а не медицинский диагноз. Мы исследуем ваш уникальный психологический почерк."],
+  introNote:"Прохождение займет около 15-20 минут. Не переживайте, если нужно отвлечься - прогресс сохранится, и вы сможете вернуться к тесту позже.",
+  start:"Начать тест", cont:"Продолжить", restart:"Начать заново",
+  blockOf:(a,b)=>`Блок ${a} из ${b}`,
+  statementOf:(a,b)=>`Утверждение ${a} / ${b}`,
+  scaleLow:"совсем не про меня", scaleHigh:"полностью про меня",
+  toStart:"К началу", back:"Назад", next:"Дальше", showResult:"Показать результат",
+  leftToAnswer:n=>`Осталось ответить: ${n}`,
+  blockDone:"Блок готов. Можно идти дальше.",
+  allDone:"Всё отвечено. Можно смотреть результат.",
+  cheers:["Отвечайте не раздумывая подолгу: первый отклик обычно самый честный.","Первый блок позади. Дальше пойдёт привычнее.","Идёте ровно, пятая часть уже за спиной.","Почти треть пройдена.","Хороший ход. Если нужно, можно прерваться: ответы сохраняются.","К концу этого блока будет ровно половина.","Больше половины позади. Профиль уже складывается.","Осталось три блока.","Осталось два блока.","Последний блок, дальше сразу результат."],
+  kickerAlmost:"Почти готово",
+  emailH1:"Куда отправить вашу копию?",
+  emailLead:"Тест пройден. Введите адрес электронной почты, мы отправим вам результат, чтобы он не потерялся: профиль по девяти типам и презентации ваших ведущих типов.",
+  emailLabel:"Ваш email", emailSend:"Отправить и показать результат",
+  emailPrivacy:"Адрес используется один раз, только чтобы отправить вам эту копию. Никаких рассылок.",
+  errEmpty:"Введите адрес почты.",
+  errSyntax:"Похоже, в адресе опечатка. Проверьте формат: name@example.com",
+  didYouMean:(a)=>`Может быть, вы имели в виду <a id="fixDomain">${a}</a>? Если адрес верный, нажмите кнопку ещё раз.`,
+  checking:"Проверяем адрес...",
+  errNoMx:d=>`Домен ${d} не принимает почту. Проверьте адрес.`,
+  accepted:"Адрес принят. Отправляем письмо...",
+  kickerResult:"Ваш результат", resultH1:"Профиль характера",
+  sentTo:e=>`Копия результата отправлена на ${e}. Если письма нет, загляните в спам.`,
+  sendFailed:e=>`Письмо на ${e} отправить не получилось. Результат ниже, сохраните ссылки на презентации.`,
+  savedOnly:e=>`Адрес ${e} сохранён. Результат ниже, сохраните ссылки на презентации.`,
+  resultLead:"Каждая шкала - от 0 до 100. У большинства людей выражено сразу несколько типов, так что смотрите на два-три верхних: это и есть ваш почерк. Нажмите на строку, чтобы открыть презентацию типа.",
+  topTypes:"Ваши ведущие типы - и почему",
+  rank:(i,s)=>`${i} место - ${s} из 100`,
+  resonated:"Сильнее всего у вас откликнулось:",
+  openPresentation:"Открыть презентацию типа",
+  closing:"Высокий балл - это не диагноз. Это подробная карта ваших привычных жизненных стратегий и защит. Знать свой тип характера полезно, но настоящее качество жизни меняется тогда, когда вы перестаете воевать со своими уязвимостями и учитесь ими управлять.",
+  ctaText:"Если вы чувствуете, что какие-то паттерны всерьез вас тормозят, забирают энергию или усложняют отношения, приглашаю вас на короткую ознакомительную встречу. Мы предметно разберем ваш профиль: переведем сухие результаты на язык вашей реальной жизни и обсудим, как перестать проваливаться в привычные сценарии и начать опираться на свою настоящую силу.",
+  ctaButton:"Записаться на встречу", again:"Пройти заново",
+  mailSubject:"Ваш профиль характера",
+  mailArchive:e=>`Копия результата: ${e}`,
+  mailLead:"Каждая шкала - от 0 до 100. У большинства людей выражено сразу несколько типов, так что смотрите на два-три верхних: это и есть ваш почерк. Нажмите на название, чтобы открыть презентацию типа."
+},
+uk:{
+  htmlLang:"uk", title:"Тест: профіль характеру",
+  themeTitle:"Змінити тему", langTitle:"Change language / Сменить язык",
+  kickerIntro:"Самодослідження характеру",
+  introH1:"Який у вас тип характеру?",
+  introLead:"У цьому тесті 90 тверджень про те, як ви зазвичай думаєте, відчуваєте та дієте. За підсумком ми складемо ваш профіль за 9 типами характеру, щоб ви побачили свої найяскравіші риси.",
+  introCardTitle:"Кілька слів перед стартом",
+  introBullets:["Оцінюйте твердження від 0 (&laquo;зовсім не про мене&raquo;) до 10 (&laquo;це точно я&raquo;).","Обирайте відповіді про себе справжнього, а не про того, ким хотілося б бути.","Тут немає правильних, неправильних чи &laquo;поганих&raquo; типів. У кожного характеру є своя сила і своя вразливість.","Це інструмент самопізнання, а не медичний діагноз. Ми досліджуємо ваш унікальний психологічний почерк."],
+  introNote:"Проходження займе близько 15-20 хвилин. Не хвилюйтеся, якщо потрібно відволіктися - прогрес збережеться, і ви зможете повернутися до тесту пізніше.",
+  start:"Почати тест", cont:"Продовжити", restart:"Почати спочатку",
+  blockOf:(a,b)=>`Блок ${a} з ${b}`,
+  statementOf:(a,b)=>`Твердження ${a} / ${b}`,
+  scaleLow:"зовсім не про мене", scaleHigh:"повністю про мене",
+  toStart:"На початок", back:"Назад", next:"Далі", showResult:"Показати результат",
+  leftToAnswer:n=>`Залишилося відповісти: ${n}`,
+  blockDone:"Блок готовий. Можна йти далі.",
+  allDone:"Усе відповіли. Можна дивитися результат.",
+  cheers:["Відповідайте не роздумуючи довго: перший відгук зазвичай найчесніший.","Перший блок позаду. Далі піде звичніше.","Ідете рівно, п'ята частина вже за спиною.","Майже третину пройдено.","Гарний хід. Якщо потрібно, можна перерватися: відповіді зберігаються.","До кінця цього блоку буде рівно половина.","Більше половини позаду. Профіль уже складається.","Залишилося три блоки.","Залишилося два блоки.","Останній блок, далі одразу результат."],
+  kickerAlmost:"Майже готово",
+  emailH1:"Куди надіслати вашу копію?",
+  emailLead:"Тест пройдено. Введіть адресу електронної пошти, ми надішлемо вам результат, щоб він не загубився: профіль за дев'ятьма типами та презентації ваших провідних типів.",
+  emailLabel:"Ваш email", emailSend:"Надіслати і показати результат",
+  emailPrivacy:"Адреса використовується один раз, тільки щоб надіслати вам цю копію. Жодних розсилок.",
+  errEmpty:"Введіть адресу пошти.",
+  errSyntax:"Схоже, в адресі помилка. Перевірте формат: name@example.com",
+  didYouMean:(a)=>`Можливо, ви мали на увазі <a id="fixDomain">${a}</a>? Якщо адреса правильна, натисніть кнопку ще раз.`,
+  checking:"Перевіряємо адресу...",
+  errNoMx:d=>`Домен ${d} не приймає пошту. Перевірте адресу.`,
+  accepted:"Адресу прийнято. Надсилаємо лист...",
+  kickerResult:"Ваш результат", resultH1:"Профіль характеру",
+  sentTo:e=>`Копію результату надіслано на ${e}. Якщо листа немає, загляньте у спам.`,
+  sendFailed:e=>`Лист на ${e} надіслати не вдалося. Результат нижче, збережіть посилання на презентації.`,
+  savedOnly:e=>`Адресу ${e} збережено. Результат нижче, збережіть посилання на презентації.`,
+  resultLead:"Кожна шкала - від 0 до 100. У більшості людей виражено одразу кілька типів, тож дивіться на два-три верхніх: це і є ваш почерк. Натисніть на рядок, щоб відкрити презентацію типу.",
+  topTypes:"Ваші провідні типи - і чому",
+  rank:(i,s)=>`${i} місце - ${s} зі 100`,
+  resonated:"Найсильніше у вас відгукнулося:",
+  openPresentation:"Відкрити презентацію типу",
+  closing:"Високий бал - це не діагноз. Це докладна карта ваших звичних життєвих стратегій і захистів. Знати свій тип характеру корисно, але справжня якість життя змінюється тоді, коли ви перестаєте воювати зі своїми вразливостями і вчитеся ними керувати.",
+  ctaText:"Якщо ви відчуваєте, що якісь патерни всерйоз вас гальмують, забирають енергію або ускладнюють стосунки, запрошую вас на коротку ознайомчу зустріч. Ми предметно розберемо ваш профіль: перекладемо сухі результати мовою вашого реального життя і обговоримо, як перестати провалюватися у звичні сценарії і почати спиратися на свою справжню силу.",
+  ctaButton:"Записатися на зустріч", again:"Пройти знову",
+  mailSubject:"Ваш профіль характеру",
+  mailArchive:e=>`Копія результату: ${e}`,
+  mailLead:"Кожна шкала - від 0 до 100. У більшості людей виражено одразу кілька типів, тож дивіться на два-три верхніх: це і є ваш почерк. Натисніть на назву, щоб відкрити презентацію типу."
+},
+en:{
+  htmlLang:"en", title:"Character profile test",
+  themeTitle:"Change theme", langTitle:"Змінити мову / Сменить язык",
+  kickerIntro:"Character self-inquiry",
+  introH1:"What is your character type?",
+  introLead:"This test has 90 statements about how you usually think, feel and act. At the end we build your profile across 9 character types, so you can see which traits stand out most.",
+  introCardTitle:"A few words before you start",
+  introBullets:["Rate each statement from 0 (&laquo;not me at all&raquo;) to 10 (&laquo;that is exactly me&raquo;).","Answer as the person you actually are, not the one you would like to be.","There are no right, wrong or &laquo;bad&raquo; types. Every character has its own strength and its own vulnerability.","This is a tool for self-knowledge, not a medical diagnosis. We are exploring your own psychological handwriting."],
+  introNote:"It takes about 15-20 minutes. If you need to step away, your progress is saved and you can come back to the test later.",
+  start:"Start the test", cont:"Continue", restart:"Start over",
+  blockOf:(a,b)=>`Block ${a} of ${b}`,
+  statementOf:(a,b)=>`Statement ${a} / ${b}`,
+  scaleLow:"not me at all", scaleHigh:"completely me",
+  toStart:"To the start", back:"Back", next:"Next", showResult:"Show the result",
+  leftToAnswer:n=>`Left to answer: ${n}`,
+  blockDone:"Block complete. You can move on.",
+  allDone:"All answered. You can see the result.",
+  cheers:["Answer without dwelling too long: the first response is usually the most honest.","First block done. It gets easier from here.","Steady pace, a fifth is already behind you.","Almost a third of the way.","Good going. You can pause if you need to: answers are saved.","By the end of this block you will be exactly halfway.","More than half behind you. The profile is taking shape.","Three blocks left.","Two blocks left.","Last block, the result comes right after."],
+  kickerAlmost:"Almost there",
+  emailH1:"Where should we send your copy?",
+  emailLead:"The test is complete. Enter your email address and we will send you the result so it does not get lost: your profile across nine types and the presentations of your leading types.",
+  emailLabel:"Your email", emailSend:"Send and show the result",
+  emailPrivacy:"The address is used once, only to send you this copy. No mailing lists.",
+  errEmpty:"Enter an email address.",
+  errSyntax:"That address looks like a typo. Check the format: name@example.com",
+  didYouMean:(a)=>`Did you mean <a id="fixDomain">${a}</a>? If the address is correct, press the button again.`,
+  checking:"Checking the address...",
+  errNoMx:d=>`The domain ${d} does not accept mail. Please check the address.`,
+  accepted:"Address accepted. Sending the email...",
+  kickerResult:"Your result", resultH1:"Character profile",
+  sentTo:e=>`A copy of the result was sent to ${e}. If it is not there, check your spam folder.`,
+  sendFailed:e=>`The email to ${e} could not be sent. Your result is below, save the links to the presentations.`,
+  savedOnly:e=>`The address ${e} has been saved. Your result is below, save the links to the presentations.`,
+  resultLead:"Each scale runs from 0 to 100. Most people score high on several types at once, so look at the top two or three: that is your handwriting. Click a row to open the presentation for that type.",
+  topTypes:"Your leading types - and why",
+  rank:(i,s)=>`No. ${i} - ${s} out of 100`,
+  resonated:"What resonated most strongly:",
+  openPresentation:"Open the type presentation",
+  closing:"A high score is not a diagnosis. It is a detailed map of your habitual life strategies and defences. Knowing your character type is useful, but real change in quality of life comes when you stop fighting your vulnerabilities and learn to work with them.",
+  ctaText:"If you feel that some of these patterns are seriously holding you back, draining your energy or complicating your relationships, I invite you to a short introductory session. We will go through your profile in detail: translate the dry results into the language of your real life and discuss how to stop falling into the familiar scripts and start drawing on your genuine strength.",
+  ctaButton:"Book a session", again:"Take the test again",
+  mailSubject:"Your character profile",
+  mailArchive:e=>`Result copy: ${e}`,
+  mailLead:"Each scale runs from 0 to 100. Most people score high on several types at once, so look at the top two or three: that is your handwriting. Click a name to open the presentation for that type."
+}};
+// Russian is the source text, so it stays the default; a stored choice always
+// wins, and the browser's own language only decides the very first visit.
+let lang=(function(){try{const v=localStorage.getItem("chartlang"); if(LANGS.includes(v))return v}catch(e){}
+  const n=(navigator.language||"ru").slice(0,2).toLowerCase();
+  const pick=LANGS.includes(n)?n:"ru";
+  try{localStorage.setItem("chartlang",pick)}catch(e){}
+  return pick;})();
+function T(){return UI[lang]||UI.ru}
 const SCALE_MIN=0, SCALE_MAX=10, PER_PAGE=9;
 // EmailJS credentials; while any field is empty the address is validated and
 // stored but no mail is sent (emailStatus becomes "unconfigured")
@@ -375,22 +525,22 @@ function emailHTML(sc){
     const q=topStatements(ti,2).map(x=>
       `<div style="font:italic 400 14px ${SANS};color:${INK};margin:8px 0;padding-left:12px;border-left:2px solid ${LINE}">&laquo;${esc(x.s)}&raquo; - <b>${x.v}/10</b></div>`).join("");
     return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${CARD};border:1px solid ${LINE};border-left:4px solid ${t.color};border-radius:14px;margin:16px 0"><tr><td style="padding:20px 22px">
-      <div style="font:600 12px ${SANS};letter-spacing:2px;text-transform:uppercase;color:${ACC}">${i+1} место - ${score} из 100</div>
+      <div style="font:600 12px ${SANS};letter-spacing:2px;text-transform:uppercase;color:${ACC}">${T().rank(i+1,score)}</div>
       <div style="font:400 19px ${SERIF};color:${INK};margin:6px 0 0">${esc(t.name)}</div>
       <div style="font:400 15px ${SANS};color:${MUTED};margin-top:8px;line-height:1.55">${esc(t.summary)}</div>
-      <div style="margin-top:12px;border-top:1px dashed ${LINE};padding-top:10px"><div style="font:400 13px ${SANS};color:${MUTED};margin-bottom:4px">Сильнее всего у вас откликнулось:</div>${q}</div>
-      <div style="margin-top:14px"><a href="${SITE_URL}${t.file}" style="font:600 14px ${SANS};color:${ACC};text-decoration:none">Открыть презентацию типа -&gt;</a></div>
+      <div style="margin-top:12px;border-top:1px dashed ${LINE};padding-top:10px"><div style="font:400 13px ${SANS};color:${MUTED};margin-bottom:4px">${T().resonated}</div>${q}</div>
+      <div style="margin-top:14px"><a href="${SITE_URL}${t.file}" style="font:600 14px ${SANS};color:${ACC};text-decoration:none">${T().openPresentation} -&gt;</a></div>
     </td></tr></table>`;
   }).join("");
   return `<div style="margin:0;padding:0;background:${BG}"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${BG}"><tr><td align="center" style="padding:28px 12px">
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="640" style="width:640px;max-width:100%;background:${CARD};border:1px solid ${LINE};border-radius:18px"><tr><td style="padding:32px 34px">
-      <div style="font:600 12px ${SANS};letter-spacing:2.5px;text-transform:uppercase;color:${ACC}">Ваш результат</div>
-      <h1 style="font:400 30px ${SERIF};color:${INK};margin:10px 0 14px">Профиль характера</h1>
-      <p style="font:400 15.5px ${SANS};color:${MUTED};line-height:1.6;margin:0 0 22px">Каждая шкала - от 0 до 100. У большинства людей выражено сразу несколько типов, так что смотрите на два-три верхних: это и есть ваш почерк.</p>
+      <div style="font:600 12px ${SANS};letter-spacing:2.5px;text-transform:uppercase;color:${ACC}">${T().kickerResult}</div>
+      <h1 style="font:400 30px ${SERIF};color:${INK};margin:10px 0 14px">${T().resultH1}</h1>
+      <p style="font:400 15.5px ${SANS};color:${MUTED};line-height:1.6;margin:0 0 22px">${T().mailLead}</p>
       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0 0 30px">${bars}</table>
-      <h2 style="font:400 22px ${SERIF};color:${INK};margin:0 0 6px">Ваши ведущие типы - и почему</h2>
+      <h2 style="font:400 22px ${SERIF};color:${INK};margin:0 0 6px">${T().topTypes}</h2>
       ${cards}
-      <div style="background:${WBG};border:1px solid ${WLN};color:${WINK};border-radius:12px;padding:14px 18px;font:400 14px ${SANS};line-height:1.55;margin:24px 0 0">Высокий балл - не диагноз, а карта привычных стратегий. Если какие-то черты всерьёз мешают жить, лучше обсудить это со специалистом, чем воевать с собой.</div>
+      <div style="background:${WBG};border:1px solid ${WLN};color:${WINK};border-radius:12px;padding:14px 18px;font:400 14px ${SANS};line-height:1.55;margin:24px 0 0">${T().closing}</div>
     </td></tr></table>
   </td></tr></table></div>`;
 }
@@ -403,49 +553,49 @@ async function sendResultEmail(){
       body:JSON.stringify({service_id:EMAIL_CONFIG.serviceId,template_id:EMAIL_CONFIG.templateId,
         user_id:EMAIL_CONFIG.publicKey,
         template_params:{to_email:to,subject:subject,message:html}})});
-    const r=await post(email,"Ваш профиль характера");
+    const r=await post(email,T().mailSubject);
     emailStatus=r.ok?"sent":"failed";
     // separate archive copy for the practice; the subject carries the recipient
     // so the archive is searchable. Its failure must not affect the visitor.
-    try{await post(ARCHIVE_EMAIL,"Копия результата: "+email)}catch(e){}
+    try{await post(ARCHIVE_EMAIL,T().mailArchive(email))}catch(e){}
   }catch(e){emailStatus="failed"}
 }
 function emailSlide(){
   const d=document.createElement("div"); d.className="slide active";
   d.innerHTML=`
-    <div class="kicker">Почти готово</div>
-    <h1>Куда отправить вашу копию?</h1>
-    <p class="lead">Тест пройден. Введите адрес электронной почты, мы отправим вам результат, чтобы он не потерялся: профиль по девяти типам и презентации ваших ведущих типов.</p>
+    <div class="kicker">${T().kickerAlmost}</div>
+    <h1>${T().emailH1}</h1>
+    <p class="lead">${T().emailLead}</p>
     <div class="intro-card">
-      <label for="emailInput" style="font-weight:600">Ваш email</label>
+      <label for="emailInput" style="font-weight:600">${T().emailLabel}</label>
       <div class="email-row">
         <input id="emailInput" type="email" inputmode="email" autocomplete="email" placeholder="name@example.com" value="${email?email.replace(/[^A-Za-z0-9._%+'@-]/g,""):""}">
-        <button class="btn" id="emailBtn">Отправить и показать результат</button>
+        <button class="btn" id="emailBtn">${T().emailSend}</button>
       </div>
       <div class="email-note" id="emailNote"></div>
     </div>
-    <div class="disclaimer">Адрес используется один раз, только чтобы отправить вам эту копию. Никаких рассылок.</div>
-    <div class="nav"><button class="btn secondary" id="backBtn">Назад</button><span></span></div>`;
+    <div class="disclaimer">${T().emailPrivacy}</div>
+    <div class="nav"><button class="btn secondary" id="backBtn">${T().back}</button><span></span></div>`;
   const input=d.querySelector("#emailInput"), btn=d.querySelector("#emailBtn"), note=d.querySelector("#emailNote");
   function setNote(cls,html){note.className="email-note"+(cls?" "+cls:""); note.innerHTML=html}
   async function submit(){
     const v=input.value.trim().toLowerCase();
-    if(!v){setNote("err","Введите адрес почты."); input.focus(); return}
-    if(!emailSyntaxOk(v)){setNote("err","Похоже, в адресе опечатка. Проверьте формат: name@example.com"); return}
+    if(!v){setNote("err",T().errEmpty); input.focus(); return}
+    if(!emailSyntaxOk(v)){setNote("err",T().errSyntax); return}
     const dom=v.split("@")[1];
     const hint=suggestDomain(dom);
     if(hint&&note.dataset.hinted!==v){
       note.dataset.hinted=v;
       const fixed=v.split("@")[0]+"@"+hint;
-      setNote("err",`Может быть, вы имели в виду <a id="fixDomain">${fixed}</a>? Если адрес верный, нажмите кнопку ещё раз.`);
+      setNote("err",T().didYouMean(fixed));
       note.querySelector("#fixDomain").onclick=()=>{input.value=fixed; setNote("",""); note.dataset.hinted=""};
       return;
     }
-    btn.disabled=true; setNote("","Проверяем адрес...");
+    btn.disabled=true; setNote("",T().checking);
     const mx=await domainAcceptsMail(dom);
-    if(mx===false){btn.disabled=false; setNote("err",`Домен ${dom} не принимает почту. Проверьте адрес.`); return}
+    if(mx===false){btn.disabled=false; setNote("err",T().errNoMx(dom)); return}
     email=v; save();
-    setNote("ok","Адрес принят. Отправляем письмо...");
+    setNote("ok",T().accepted);
     await sendResultEmail();
     page=11; render();
   }
@@ -459,21 +609,16 @@ function introSlide(){
   const d=document.createElement("div"); d.className="slide active";
   const done=Object.keys(answers).length;
   d.innerHTML=`
-    <div class="kicker">Самоисследование характера</div>
-    <h1>Какой у вас тип характера?</h1>
-    <p class="lead">В этом тесте 90 утверждений о том, как вы обычно думаете, чувствуете и действуете. По итогу мы составим ваш профиль по 9 типам характера, чтобы вы увидели свои самые яркие черты.</p>
+    <div class="kicker">${T().kickerIntro}</div>
+    <h1>${T().introH1}</h1>
+    <p class="lead">${T().introLead}</p>
     <div class="intro-card">
-      <strong>Пару слов перед стартом</strong>
-      <ul>
-        <li>Оценивайте утверждения от 0 (&laquo;вообще не про меня&raquo;) до 10 (&laquo;это точно я&raquo;).</li>
-        <li>Выбирайте ответы про себя реального, а не про того, каким хотелось бы быть.</li>
-        <li>Здесь нет правильных, неправильных или &laquo;плохих&raquo; типов. У каждого характера есть своя сила и своя уязвимость.</li>
-        <li>Это инструмент самопознания, а не медицинский диагноз. Мы исследуем ваш уникальный психологический почерк.</li>
-      </ul>
+      <strong>${T().introCardTitle}</strong>
+      <ul>${T().introBullets.map(b=>`<li>${b}</li>`).join("")}</ul>
     </div>
-    <div class="disclaimer">Прохождение займет около 15-20 минут. Не переживайте, если нужно отвлечься - прогресс сохранится, и вы сможете вернуться к тесту позже.</div>
-    <button class="btn" id="startBtn">${done>0?"Продолжить":"Начать тест"}</button>
-    ${done>0?'<button class="btn secondary" id="resetBtn" style="margin-left:10px">Начать заново</button>':""}
+    <div class="disclaimer">${T().introNote}</div>
+    <button class="btn" id="startBtn">${done>0?T().cont:T().start}</button>
+    ${done>0?`<button class="btn secondary" id="resetBtn" style="margin-left:10px">${T().restart}</button>`:""}
   `;
   d.querySelector("#startBtn").onclick=()=>{page=firstUnfinishedPage(); render()};
   const rb=d.querySelector("#resetBtn");
@@ -490,20 +635,20 @@ function firstUnfinishedPage(){
 function questionSlide(p){
   const d=document.createElement("div"); d.className="slide active";
   const qs=order.slice(p*PER_PAGE,(p+1)*PER_PAGE);
-  let html=`<h2>Блок ${p+1} из 10</h2>`;
+  let html=`<h2>${T().blockOf(p+1,10)}</h2>`;
   qs.forEach((o,i)=>{
     const n=p*PER_PAGE+i+1, v=answers[key(o)];
     html+=`<div class="q-card ${v!==undefined?"answered":""}" data-k="${key(o)}">
-      <div class="q-num">Утверждение ${n} / 90</div>
+      <div class="q-num">${T().statementOf(n,90)}</div>
       <div class="q-text">${TYPES[o.type].statements[o.idx]}</div>
       <div class="scale">${Array.from({length:11},(_,s)=>
         `<button data-v="${s}" class="${v===s?"sel":""}">${s}</button>`).join("")}</div>
-      <div class="scale-labels"><span>совсем не про меня</span><span>полностью про меня</span></div>
+      <div class="scale-labels"><span>${T().scaleLow}</span><span>${T().scaleHigh}</span></div>
     </div>`;
   });
   html+=`<div class="nav">
-    <button class="btn secondary" id="backBtn">${p===0?"К началу":"Назад"}</button>
-    <button class="btn" id="nextBtn" disabled>${p===9?"Показать результат":"Дальше"}</button>
+    <button class="btn secondary" id="backBtn">${p===0?T().toStart:T().back}</button>
+    <button class="btn" id="nextBtn" disabled>${p===9?T().showResult:T().next}</button>
   </div>
   <div class="hint" id="navHint"></div>`;
   d.innerHTML=html;
@@ -527,26 +672,15 @@ function refreshNav(d,p){
   const missing=qs.filter(o=>answers[key(o)]===undefined).length;
   const btn=d.querySelector("#nextBtn");
   btn.disabled=missing>0;
-  d.querySelector("#navHint").textContent=missing>0?`Осталось ответить: ${missing}`:"";
+  d.querySelector("#navHint").textContent=missing>0?T().leftToAnswer(missing):"";
 }
-const CHEERS=[
-"Отвечайте не раздумывая подолгу: первый отклик обычно самый честный.",
-"Первый блок позади. Дальше пойдёт привычнее.",
-"Идёте ровно, пятая часть уже за спиной.",
-"Почти треть пройдена.",
-"Хороший ход. Если нужно, можно прерваться: ответы сохраняются.",
-"К концу этого блока будет ровно половина.",
-"Больше половины позади. Профиль уже складывается.",
-"Осталось три блока.",
-"Осталось два блока.",
-"Последний блок, дальше сразу результат."];
 function blockAnswered(b){
   let a=0; for(let i=0;i<PER_PAGE;i++){const o=order[b*PER_PAGE+i]; if(answers[key(o)]!==undefined)a++}
   return a;
 }
 function updateProgress(){
   const done=Object.keys(answers).length;
-  document.getElementById("stepLabel").textContent=`Блок ${Math.min(page+1,10)} из 10`;
+  document.getElementById("stepLabel").textContent=T().blockOf(Math.min(page+1,10),10);
   document.getElementById("answeredLabel").textContent=`${done} / 90`;
   const steps=document.getElementById("steps");
   if(steps.children.length!==10)
@@ -559,10 +693,10 @@ function updateProgress(){
   const curDone=page<10?blockAnswered(page):0;
   if(page<10&&curDone===PER_PAGE){
     c.classList.add("done-block");
-    c.textContent=page===9?"Всё отвечено. Можно смотреть результат.":"Блок готов. Можно идти дальше.";
+    c.textContent=page===9?T().allDone:T().blockDone;
   }else{
     c.classList.remove("done-block");
-    c.textContent=CHEERS[Math.min(page,9)];
+    c.textContent=T().cheers[Math.min(page,9)];
   }
 }
 function scores(){
@@ -579,11 +713,11 @@ function resultSlide(){
   const d=document.createElement("div"); d.className="slide active";
   const sc=scores();
   let notice="";
-  if(emailStatus==="sent")notice=`<div class="notice">Копия результата отправлена на ${email}. Если письма нет, загляните в спам.</div>`;
-  else if(emailStatus==="failed")notice=`<div class="notice">Письмо на ${email} отправить не получилось. Результат ниже, сохраните ссылки на презентации.</div>`;
-  else if(emailStatus==="unconfigured")notice=`<div class="notice">Адрес ${email} сохранён. Результат ниже, сохраните ссылки на презентации.</div>`;
-  let html=`<div class="kicker">Ваш результат</div><h1>Профиль характера</h1>${notice}
-  <p class="lead">Каждая шкала - от 0 до 100. У большинства людей выражено сразу несколько типов, так что смотрите на два-три верхних: это и есть ваш почерк. Нажмите на строку, чтобы открыть презентацию типа.</p>
+  if(emailStatus==="sent")notice=`<div class="notice">${T().sentTo(email)}</div>`;
+  else if(emailStatus==="failed")notice=`<div class="notice">${T().sendFailed(email)}</div>`;
+  else if(emailStatus==="unconfigured")notice=`<div class="notice">${T().savedOnly(email)}</div>`;
+  let html=`<div class="kicker">${T().kickerResult}</div><h1>${T().resultH1}</h1>${notice}
+  <p class="lead">${T().resultLead}</p>
   <div style="margin:26px 0">`;
   sc.forEach(({t,score})=>{
     html+=`<div class="res-row" onclick="location.href='${t.file}'">
@@ -592,23 +726,23 @@ function resultSlide(){
       <div class="res-val">${score}</div>
     </div>`;
   });
-  html+=`</div><h2>Ваши ведущие типы - и почему</h2>`;
+  html+=`</div><h2>${T().topTypes}</h2>`;
   sc.slice(0,3).forEach(({t,ti,score},i)=>{
     const why=topStatements(ti,2).map(x=>`<div class="why-q">«${x.s}» - <b>${x.v}/10</b></div>`).join("");
     html+=`<div class="top-card" style="border-left-color:${t.color}">
-      <div class="rank">${i+1} место - ${score} из 100</div>
+      <div class="rank">${T().rank(i+1,score)}</div>
       <h3>${t.name}</h3>
       <p>${t.summary}</p>
-      <div class="why"><div class="why-t">Сильнее всего у вас откликнулось:</div>${why}</div>
-      <p><a href="${t.file}">Открыть презентацию типа →</a></p>
+      <div class="why"><div class="why-t">${T().resonated}</div>${why}</div>
+      <p><a href="${t.file}">${T().openPresentation} -&gt;</a></p>
     </div>`;
   });
-  html+=`<div class="disclaimer">Высокий балл - это не диагноз. Это подробная карта ваших привычных жизненных стратегий и защит. Знать свой тип характера полезно, но настоящее качество жизни меняется тогда, когда вы перестаете воевать со своими уязвимостями и учитесь ими управлять.</div>
+  html+=`<div class="disclaimer">${T().closing}</div>
   <div class="cta-card">
-    <p>Если вы чувствуете, что какие-то паттерны всерьез вас тормозят, забирают энергию или усложняют отношения, приглашаю вас на короткую ознакомительную встречу. Мы предметно разберем ваш профиль: переведем сухие результаты на язык вашей реальной жизни и обсудим, как перестать проваливаться в привычные сценарии и начать опираться на свою настоящую силу.</p>
-    <a class="btn" href="https://calendly.com/elena-miro/30" target="_blank" rel="noopener">Записаться на встречу</a>
+    <p>${T().ctaText}</p>
+    <a class="btn" href="https://calendly.com/elena-miro/30" target="_blank" rel="noopener">${T().ctaButton}</a>
   </div>
-  <button class="btn secondary" id="againBtn">Пройти заново</button>`;
+  <button class="btn secondary" id="againBtn">${T().again}</button>`;
   d.innerHTML=html;
   d.querySelector("#againBtn").onclick=()=>restart(-1);
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
@@ -616,6 +750,26 @@ function resultSlide(){
   }));
   return d;
 }
+function applyLang(next){
+  if(!LANGS.includes(next)||next===lang) return;
+  lang=next;
+  try{localStorage.setItem("chartlang",lang)}catch(e){}
+  document.documentElement.setAttribute("lang",T().htmlLang);
+  document.title=T().title;
+  const lb=document.getElementById("langToggle");
+  if(lb) lb.textContent=lang.toUpperCase();
+  // answers are keyed by type/index, never by text, so a language switch
+  // mid-test keeps every answer and the current page
+  render();
+}
+(function(){
+  const b=document.getElementById("langToggle");
+  if(!b) return;
+  b.textContent=lang.toUpperCase();
+  b.onclick=function(){applyLang(LANGS[(LANGS.indexOf(lang)+1)%LANGS.length])};
+  document.documentElement.setAttribute("lang",T().htmlLang);
+  document.title=T().title;
+})();
 load();
 if(seed===null){seed=newSeed()}
 buildOrder();
