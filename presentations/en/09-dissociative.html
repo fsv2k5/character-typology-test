@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dissociative Type - Type Presentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<script>(function(){var t=null;try{t=localStorage.getItem("chartheme")}catch(e){}
+if(!t)t=(window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches)?"light":"dark";
+document.documentElement.setAttribute("data-theme",t);})();</script>
+<style>
+  :root{ --accent:#9a9a94; --accent-soft:rgba(154,154,148,.13); }
+  html[data-theme="dark"]{
+    --bg:#151715; --card:#1e221f; --card2:#252a26; --ink:#eae9e2; --muted:#a1a69c;
+    --line:#333b34; --accent-ui:var(--accent); --on-accent:#141814; --shadow:rgba(0,0,0,.30);
+    --warn-bg:rgba(224,180,88,.08); --warn-line:rgba(224,180,88,.35); --warn-ink:#d9c390;
+  }
+  html[data-theme="light"]{
+    --bg:#f6f3ec; --card:#ffffff; --card2:#f1eee6; --ink:#2e2c28; --muted:#6f6d64;
+    --line:#e2ddd0; --accent-ui:color-mix(in srgb, var(--accent) 65%, #2e2c28); --on-accent:#ffffff; --shadow:rgba(70,65,50,.10);
+    --warn-bg:rgba(176,138,50,.08); --warn-line:rgba(176,138,50,.35); --warn-ink:#7c6a3a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
+  html{-webkit-text-size-adjust:100%}
+  html{scroll-behavior:smooth}
+  body{
+    background:radial-gradient(1100px 700px at 75% -10%, var(--accent-soft) 0%, var(--bg) 60%);
+    color:var(--ink); font-family:"Inter","SF Pro Text",-apple-system,"Segoe UI",Roboto,Arial,sans-serif; font-size:16.5px; line-height:1.65;
+    transition:background-color .3s, color .3s;
+  }
+  .deck{max-width:860px; margin:0 auto; padding:0 22px}
+  section.slide{min-height:92vh; padding:64px 0 48px; border-bottom:1px solid var(--line); display:flex; flex-direction:column; justify-content:center}
+  /* Inside an iframe the deck is one scrolling page: 92vh per slide would
+     fight the auto-sizing frame and leave huge empty gaps. */
+  html.in-frame .slide{min-height:auto; padding:40px 0 32px; justify-content:flex-start}
+  section.slide:last-child{border-bottom:none}
+  .kicker{text-transform:uppercase; letter-spacing:2.5px; font-size:12px; font-weight:600; color:var(--accent-ui); margin-bottom:12px}
+  h1{font-family:"Literata","PT Serif",Georgia,serif; font-size:40px; font-weight:600; line-height:1.2; margin-bottom:14px}
+  h2{font-family:"Literata","PT Serif",Georgia,serif; font-size:27px; font-weight:600; margin-bottom:18px}
+  .lead{color:var(--muted); font-size:18px; max-width:640px}
+  p{margin:10px 0}
+  ul{margin:8px 0 8px 22px}
+  li{margin:9px 0}
+  .muted{color:var(--muted)}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px 24px; margin:12px 0; box-shadow:0 2px 12px var(--shadow)}
+  .card.accent{border-left:4px solid var(--accent)}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  @media(max-width:640px){
+    .grid2{grid-template-columns:1fr}
+    h1{font-size:28px} h2{font-size:22px}
+    .deck{padding:0 16px}
+    section.slide{min-height:auto; padding:44px 0 34px}
+    .card{padding:16px 16px}
+    .quote{font-size:17px}
+    .lead{font-size:16px}
+    .theme-toggle{top:10px; right:10px; width:38px; height:38px}
+  }
+  .quote{font-family:"Literata","PT Serif",Georgia,serif; font-style:italic; font-size:19px; color:var(--ink); border-left:3px solid var(--accent); padding:6px 0 6px 18px; margin:18px 0}
+  .pill{display:inline-block; font-size:13px; color:var(--accent-ui); border:1px solid var(--accent); border-radius:20px; padding:4px 14px; margin:4px 6px 4px 0}
+  .footer-nav{display:flex; justify-content:space-between; padding:28px 0 60px; font-size:14px}
+  a{color:var(--accent-ui)}
+  .disclaimer{background:var(--warn-bg); border:1px solid var(--warn-line); color:var(--warn-ink); border-radius:12px; padding:14px 18px; font-size:14px; margin-top:22px}
+
+  .theme-toggle{position:fixed; top:16px; right:16px; z-index:50; width:42px; height:42px; border-radius:50%;
+    border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; font-size:17px;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px var(--shadow)}
+  .corner-toggles{position:fixed; top:16px; right:18px; z-index:20; display:flex; gap:8px}
+  .corner-toggles button{width:38px; height:38px; display:flex; align-items:center; justify-content:center;
+    background:var(--card); color:var(--muted); border:1px solid var(--line); border-radius:10px; cursor:pointer;
+    font-family:inherit; font-size:12px; font-weight:700; letter-spacing:.5px; transition:color .2s, border-color .2s}
+  .corner-toggles button:hover{color:var(--ink); border-color:var(--accent)}
+  @media (max-width:560px){.corner-toggles{top:10px; right:10px}}
+  .theme-toggle:hover{border-color:var(--accent)}
+
+</style>
+</head>
+<body>
+<div class="corner-toggles">
+  <button class="theme-toggle" id="themeToggle" title="Сменить тему"></button>
+</div>
+<div class="deck">
+
+  <!-- SLIDE 1: title -->
+  <section class="slide">
+    <div class="kicker">Character Types - 09 of 9</div>
+    <h1>Dissociative Type</h1>
+    <p class="lead">When being here, inside your own life, once became unbearably painful, the psyche found a brilliant way out - to disappear without going anywhere.</p>
+    <div class="disclaimer">A character type is a stable "handwriting" of a healthy personality - not a diagnosis and not a sentence.</div>
+    <div class="toc">
+      <a href="#recognize">Do You Recognize Yourself?</a>
+      <a href="#essence">How This Character Works</a>
+      <a href="#origin">Where It Comes From</a>
+      <a href="#strengths">Strengths</a>
+      <a href="#shadow">The Shadow Side</a>
+      <a href="#relations">In Relationships and at Work</a>
+      <a href="#growth">The Path to Balance</a>
+      <a href="#takeaway">What to Take With You</a>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: recognize -->
+  <section class="slide" id="recognize">
+    <div class="kicker">Do You Recognize Yourself?</div>
+    <h2>A Scene That Might Look Familiar</h2>
+    <p>An argument is heating up - and suddenly you notice you're watching it as if from the audience: there stands a person who looks like you, staying silent, out of words, just emptiness inside. Later you're driving home and don't remember the road - you just find yourself at the door, as if someone else had been driving. At a loved one's funeral you stand there calmly, feeling nothing, and afterward you're ashamed of that "callousness," even though what actually happened inside was a brief blackout of the soul. Sometimes, looking in the mirror, for a split second you don't recognize your own reflection. People around you say, "it's like you switched off" - and you yourself can't always explain what happened.</p>
+  </section>
+
+  <!-- SLIDE 3: essence -->
+  <section class="slide" id="essence">
+    <div class="kicker">The Essence of the Type</div>
+    <h2>Being Present Where Presence Once Caused Pain</h2>
+    <p>The dissociative type is a story about survival, not about a broken psyche. When a child has nowhere to run and nothing to fight back with, the psyche has one last option left: to disappear without moving an inch - to shut down consciousness exactly at the moment the tension becomes unbearable. That's how this character is born: either all at once, from a single terrifying event, or - more often - drop by drop, out of a long childhood of coldness and neglect.</p>
+    <p>The central conflict is between wanting to truly be in your own life - to feel, to remember, to stay whole - and the impossibility of that presence in the very place where it once cost too much. The most accurate image for it is an electrical grid: on overload, a fuse trips, and the psyche itself dims the brightness and sharpness of what's happening - the world turns flat, like a painted stage set, and time becomes stretched or fragmented.</p>
+    <p>Behind this is a set of defensive maneuvers: a break in the connection between thoughts, memory, and one's sense of self, as if part of the house had its power cut off; a feeling that the world isn't real, like a frame from someone else's film, and that one's own body is foreign, almost an avatar you steer from outside. There's also a narrowed "window of tolerance": as long as the tension stays within it, the person copes, but past the edge an ancient "freeze" reflex kicks in, and the brain stops letting the full weight of a difficult memory through.</p>
+    <p>This type is a true "great imitator": it's easy to mistake for an ordinary love of solitude, but where a genuinely withdrawn person is calm in their distance, here there's an inner hunger for closeness that feels frightening and overwhelming.</p>
+  </section>
+
+  <!-- SLIDE 4: origin -->
+  <section class="slide" id="origin">
+    <div class="kicker">Origins</div>
+    <h2>Where It Comes From</h2>
+    <p>Sometimes the cause is a single catastrophic event that splits the psyche in two all at once. But more often the story is different: it builds up over years, in a childhood that was cold and unpredictable, where the adults either failed to notice the child's feelings or were themselves the source of fear.</p>
+    <div class="card accent"><ul>
+      <li>There was no one to be comforted by - either there was no adult nearby, or the one who was supposed to soothe was themselves frightening.</li>
+      <li>Running away physically was impossible, so the child learned to run away inward, into themselves.</li>
+      <li>For years the child's feelings went unnoticed - and they had to learn not to notice them either.</li>
+      <li>Pain was systematically dismissed ("oh come on, stop making things up") - and that's how a distrust of one's own sensations grew.</li>
+      <li>The psyche couldn't "digest" what was happening all at once, and the brain blocked off part of the memories to let it keep growing.</li>
+    </ul></div>
+  </section>
+
+  <!-- SLIDE 5: strengths + shadow -->
+  <section class="slide" id="strengths">
+    <div class="kicker">Two Sides</div>
+    <h2>Strengths</h2>
+    <div class="card"><ul>
+      <li>The ability to sink into such deep concentration that renovation work could be tearing the place apart around you and you wouldn't hear it.</li>
+      <li>Cool-headedness in a crisis: while everyone else panics, this is exactly the person who becomes the calm, composed leader.</li>
+      <li>The ability to watch a conflict "from the balcony" - with philosophical distance, without getting bogged down in petty squabbles.</li>
+      <li>A rich imagination as a source of genuine creativity and artistic vision.</li>
+      <li>A high pain threshold and the ability to function where things would already be unbearable for someone else.</li>
+      <li>Flexibility - the ability to be different in different contexts without any inner hypocrisy.</li>
+      <li>At the healthy level - managed dissociation: the person decides for themselves when to "dim" themselves, and returns easily afterward.</li>
+    </ul></div>
+  </section>
+
+  <section class="slide" id="shadow">
+    <div class="kicker">Two Sides</div>
+    <h2>The Shadow Side</h2>
+    <div class="card"><ul>
+      <li>Emotional anesthesia gets in the way of fully feeling important moments in life, leaving a sense of being a "functional robot."</li>
+      <li>Gaps in memory can erase not just details but whole chunks of childhood or recent conversations.</li>
+      <li>The body seems to live apart from its owner: bruises from bumping into corners, ignored hunger and fatigue.</li>
+      <li>Under stress a fog sets in: thoughts stop lining up into a chain, and this isn't laziness but a temporary shutdown of part of the brain.</li>
+      <li>A partner reads withdrawal during conflict as indifference, though it's actually the surrender of an overloaded nervous system, not a choice.</li>
+      <li>Toxic shame over one's own "disjointedness" - a feeling of being a fraud because of the gap between inner chaos and a calm exterior.</li>
+    </ul></div>
+  </section>
+
+  <!-- SLIDE 6: relations & work -->
+  <section class="slide" id="relations">
+    <div class="kicker">Living With This Character</div>
+    <h2>In Relationships and at Work</h2>
+    <div class="card"><p><strong>In Relationships.</strong> A partner easily mistakes "withdrawing into yourself" during a fight for indifference or a silent boycott, though it's actually a protective shutdown reflex, not a decision to punish with silence. Unlike a schizoid person, someone dissociative genuinely wants closeness - it's just that closeness is capable of overwhelming them more than anything else. It helps to explain this mechanism to your partner ahead of time, while calm, and agree on a 10-15 minute pause.</p></div>
+    <div class="card" style="margin-top:14px"><p><strong>At Work.</strong> Work often feels safer than home: clear structure switches on the adult, composed part of the personality - the person is sharp and effective, if sometimes a bit dry. At home, where closeness and spontaneity are needed, a completely different, vulnerable part can come to the front - the very same director who commands the room in a meeting can get lost over a simple question at home. In its healthy form, this ability becomes a professional superpower - like a surgeon who switches off fear during an operation, only to become a warm human being again afterward.</p></div>
+  </section>
+
+  <!-- SLIDE 7: growth -->
+  <section class="slide" id="growth">
+    <div class="kicker">Practice</div>
+    <h2>The Path to Balance</h2>
+    <div class="card accent"><ul>
+      <li>In the moment of shutting down, don't fight it with willpower - quietly remind yourself that it's safe right now, and switch back on gradually.</li>
+      <li>Use sensory grounding: name out loud five things you see, four you can touch, three sounds.</li>
+      <li>Rebuild the connection with your body little by little - tapping, strength exercises, contrast showers, a weighted blanket.</li>
+      <li>Don't force forgotten childhood memories out by will: gaps in memory are scars proving you survived, and they recede on their own once you have solid ground under you.</li>
+      <li>Draw up a map of warning signs - the early signals that you're starting to "drift away" - and a safety map: places, people, a reminder phrase.</li>
+      <li>At first avoid relaxation with your eyes closed - active mindfulness works better: walking, drawing.</li>
+      <li>Talk to the anxious part of yourself not as an enemy, but as in a negotiation: "I hear that you're worried - what do you want to warn me about?"</li>
+    </ul></div>
+    <div class="disclaimer">If these traits are seriously getting in the way of living, working, or building relationships - that's a reason to reach out to a specialist, not to fight it alone.</div>
+  </section>
+
+  <!-- SLIDE 8: takeaway -->
+  <section class="slide" id="takeaway">
+    <div class="kicker">In Closing</div>
+    <h2>What to Take With You</h2>
+    <div class="quote">Dissociation isn't a malfunction and it isn't pretending - it's a creative solution your psyche once found where there was no other way out.</div>
+    <div class="quote">Your feelings haven't gone anywhere - they're temporarily frozen, and you can carefully bring warmth back to them.</div>
+    <div class="quote">Being ashamed of this defense is like being ashamed of a fever during an illness: it's not weakness, it's the psyche's immune system doing its job.</div>
+    <div class="quote">Now that you're grown, you can thank this defense for saving you - and gradually teach it new ways of being with the world.</div>
+    <p style="margin-top:18px">If any of this resonated - it's not a sentence, just recognizing yourself. And recognition is already the first step toward being fully present in your own life again.</p>
+  </section>
+
+  <div class="footer-nav">
+    <a href="../../index.html">&larr; Take the Test</a>
+    <span class="muted">Dissociative Type</span>
+  </div>
+</div>
+<script>(function(){var b=document.getElementById("themeToggle");
+var SUN='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+var MOON='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+function icon(){b.innerHTML=document.documentElement.getAttribute("data-theme")==="light"?MOON:SUN;}
+b.onclick=function(){var n=document.documentElement.getAttribute("data-theme")==="light"?"dark":"light";
+document.documentElement.setAttribute("data-theme",n);try{localStorage.setItem("chartheme",n)}catch(e){}icon();};
+icon();})();</script>
+<script>
+// Inside the Tilda embed the deck is one long page in a resizing frame: flag it
+// for CSS, report our height, and scroll the parent back to the top on arrival
+// so a visitor does not land mid-page with no way back except the browser.
+(function(){
+  if(window.parent===window) return;
+  document.documentElement.classList.add("in-frame");
+  var send=function(){
+    var h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);
+    try{window.parent.postMessage({type:"ctt:height",height:h},"*")}catch(e){}
+  };
+  try{window.parent.postMessage({type:"ctt:top"},"*")}catch(e){}
+  send();
+  window.addEventListener("load",send);
+  addEventListener("resize",send);
+  setTimeout(send,300); setTimeout(send,1200);
+})();
+</script>
+<script>
+// The language choice is shared with the test through localStorage; switching
+// here navigates to the same presentation in the next language.
+(function(){
+  var LANGS=["ru","uk","en"], HERE="en", FILE="09-dissociative.html";
+  var box=document.querySelector(".corner-toggles");
+  if(!box) return;
+  var b=document.createElement("button");
+  b.id="langToggle"; b.title="Change language"; b.textContent=HERE.toUpperCase();
+  b.onclick=function(){
+    var next=LANGS[(LANGS.indexOf(HERE)+1)%LANGS.length];
+    try{localStorage.setItem("chartlang",next)}catch(e){}
+    location.href=(next==="ru"?"../":"../"+next+"/")+FILE;
+  };
+  box.insertBefore(b, box.firstChild);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Дисоціативний тип - презентація типу</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<script>(function(){var t=null;try{t=localStorage.getItem("chartheme")}catch(e){}
+if(!t)t=(window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches)?"light":"dark";
+document.documentElement.setAttribute("data-theme",t);})();</script>
+<style>
+  :root{ --accent:#9a9a94; --accent-soft:rgba(154,154,148,.13); }
+  html[data-theme="dark"]{
+    --bg:#151715; --card:#1e221f; --card2:#252a26; --ink:#eae9e2; --muted:#a1a69c;
+    --line:#333b34; --accent-ui:var(--accent); --on-accent:#141814; --shadow:rgba(0,0,0,.30);
+    --warn-bg:rgba(224,180,88,.08); --warn-line:rgba(224,180,88,.35); --warn-ink:#d9c390;
+  }
+  html[data-theme="light"]{
+    --bg:#f6f3ec; --card:#ffffff; --card2:#f1eee6; --ink:#2e2c28; --muted:#6f6d64;
+    --line:#e2ddd0; --accent-ui:color-mix(in srgb, var(--accent) 65%, #2e2c28); --on-accent:#ffffff; --shadow:rgba(70,65,50,.10);
+    --warn-bg:rgba(176,138,50,.08); --warn-line:rgba(176,138,50,.35); --warn-ink:#7c6a3a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
+  html{-webkit-text-size-adjust:100%}
+  html{scroll-behavior:smooth}
+  body{
+    background:radial-gradient(1100px 700px at 75% -10%, var(--accent-soft) 0%, var(--bg) 60%);
+    color:var(--ink); font-family:"Inter","SF Pro Text",-apple-system,"Segoe UI",Roboto,Arial,sans-serif; font-size:16.5px; line-height:1.65;
+    transition:background-color .3s, color .3s;
+  }
+  .deck{max-width:860px; margin:0 auto; padding:0 22px}
+  section.slide{min-height:92vh; padding:64px 0 48px; border-bottom:1px solid var(--line); display:flex; flex-direction:column; justify-content:center}
+  /* Inside an iframe the deck is one scrolling page: 92vh per slide would
+     fight the auto-sizing frame and leave huge empty gaps. */
+  html.in-frame .slide{min-height:auto; padding:40px 0 32px; justify-content:flex-start}
+  section.slide:last-child{border-bottom:none}
+  .kicker{text-transform:uppercase; letter-spacing:2.5px; font-size:12px; font-weight:600; color:var(--accent-ui); margin-bottom:12px}
+  h1{font-family:"Literata","PT Serif",Georgia,serif; font-size:40px; font-weight:600; line-height:1.2; margin-bottom:14px}
+  h2{font-family:"Literata","PT Serif",Georgia,serif; font-size:27px; font-weight:600; margin-bottom:18px}
+  .lead{color:var(--muted); font-size:18px; max-width:640px}
+  p{margin:10px 0}
+  ul{margin:8px 0 8px 22px}
+  li{margin:9px 0}
+  .muted{color:var(--muted)}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px 24px; margin:12px 0; box-shadow:0 2px 12px var(--shadow)}
+  .card.accent{border-left:4px solid var(--accent)}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  @media(max-width:640px){
+    .grid2{grid-template-columns:1fr}
+    h1{font-size:28px} h2{font-size:22px}
+    .deck{padding:0 16px}
+    section.slide{min-height:auto; padding:44px 0 34px}
+    .card{padding:16px 16px}
+    .quote{font-size:17px}
+    .lead{font-size:16px}
+    .theme-toggle{top:10px; right:10px; width:38px; height:38px}
+  }
+  .quote{font-family:"Literata","PT Serif",Georgia,serif; font-style:italic; font-size:19px; color:var(--ink); border-left:3px solid var(--accent); padding:6px 0 6px 18px; margin:18px 0}
+  .pill{display:inline-block; font-size:13px; color:var(--accent-ui); border:1px solid var(--accent); border-radius:20px; padding:4px 14px; margin:4px 6px 4px 0}
+  .footer-nav{display:flex; justify-content:space-between; padding:28px 0 60px; font-size:14px}
+  a{color:var(--accent-ui)}
+  .disclaimer{background:var(--warn-bg); border:1px solid var(--warn-line); color:var(--warn-ink); border-radius:12px; padding:14px 18px; font-size:14px; margin-top:22px}
+
+  .theme-toggle{position:fixed; top:16px; right:16px; z-index:50; width:42px; height:42px; border-radius:50%;
+    border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; font-size:17px;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px var(--shadow)}
+  .corner-toggles{position:fixed; top:16px; right:18px; z-index:20; display:flex; gap:8px}
+  .corner-toggles button{width:38px; height:38px; display:flex; align-items:center; justify-content:center;
+    background:var(--card); color:var(--muted); border:1px solid var(--line); border-radius:10px; cursor:pointer;
+    font-family:inherit; font-size:12px; font-weight:700; letter-spacing:.5px; transition:color .2s, border-color .2s}
+  .corner-toggles button:hover{color:var(--ink); border-color:var(--accent)}
+  @media (max-width:560px){.corner-toggles{top:10px; right:10px}}
+  .theme-toggle:hover{border-color:var(--accent)}
+
+</style>
+</head>
+<body>
+<div class="corner-toggles">
+  <button class="theme-toggle" id="themeToggle" title="Сменить тему"></button>
+</div>
+<div class="deck">
+
+  <!-- SLIDE 1: title -->
+  <section class="slide">
+    <div class="kicker">Типи характеру · 09 з 9</div>
+    <h1>Дисоціативний тип</h1>
+    <p class="lead">Коли бути тут, всередині власного життя, одного разу стало нестерпно боляче, психіка знайшла геніальний вихід - зникати, нікуди не йдучи.</p>
+    <div class="disclaimer">Тип характеру - це стійкий «почерк» здорової особистості, а не діагноз і не вирок.</div>
+    <div class="toc">
+      <a href="#recognize">Впізнаєте себе?</a>
+      <a href="#essence">Як влаштований цей характер</a>
+      <a href="#origin">Звідки це береться</a>
+      <a href="#strengths">Сильні сторони</a>
+      <a href="#shadow">Тіньова сторона</a>
+      <a href="#relations">У стосунках і в роботі</a>
+      <a href="#growth">Шлях до балансу</a>
+      <a href="#takeaway">Що забрати з собою</a>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: recognize -->
+  <section class="slide" id="recognize">
+    <div class="kicker">Впізнаєте себе?</div>
+    <h2>Сцена, яка може здатися знайомою</h2>
+    <p>Сварка набирає обертів - і раптом ви помічаєте, що дивитеся на неї ніби із залу для глядачів: ось стоїть людина, схожа на вас, і мовчить, а слів більше немає, тільки порожнеча всередині. Пізніше ви їдете додому і не пам'ятаєте дороги - просто опиняєтеся біля дверей, ніби машину вів хтось інший. На похороні близької людини ви стоїте рівно, нічого не відчуваєте і потім соромитеся цієї «черствості», хоча насправді всередині стався короткий непритомний стан душі. Іноді, дивлячись у дзеркало, ви на частку секунди не впізнаєте своє відображення. Оточення каже: «ти ніби вимкнувся» - а ви самі не завжди можете пояснити, що сталося.</p>
+  </section>
+
+  <!-- SLIDE 3: essence -->
+  <section class="slide" id="essence">
+    <div class="kicker">Суть типу</div>
+    <h2>Бути присутнім там, де присутність колись завдавала болю</h2>
+    <p>Дисоціативний тип - історія про виживання, а не про поломку психіки. Коли дитині нікуди тікати і нічим дати відсіч, у психіки залишається останній варіант: зникнути, не рухаючись з місця, - вимкнути свідомість саме в момент, коли напруга стає непосильною. Так народжується цей характер: або одразу, з однієї страшної події, або - частіше - по краплі, з довгого дитинства в холоді й неувазі.</p>
+    <p>Центральний конфлікт - між бажанням по-справжньому бути в своєму житті, відчувати, пам'ятати, залишатися цілісним, - і неможливістю цієї присутності там, де вона колись коштувала занадто дорого. Найточніше це описує образ електромережі: при перевантаженні спрацьовує запобіжник, і психіка сама притлумлює яскравість і різкість того, що відбувається - світ стає плоским, як намальована декорація, а час тягучим або рваним.</p>
+    <p>За цим стоїть набір захисних маневрів: розрив зв'язку між думками, пам'яттю і відчуттям себе, ніби в будинку знеструмили частину кімнат; відчуття, що світ несправжній, як кадр із чужого фільму, а власне тіло - чуже, майже аватар, яким керуєш збоку. Є і звужене «вікно толерантності»: поки напруга всередині нього, людина справляється, але за краєм вмикається прадавній рефлекс «завмри», і мозок перестає пропускати важкий спогад цілком.</p>
+    <p>Цей тип - справжній «великий імітатор»: його легко сплутати зі звичайною любов'ю до самотності, але там, де замкнута людина спокійна в дистанції, тут усередині живе жага близькості, яка лякає і перевантажує.</p>
+  </section>
+
+  <!-- SLIDE 4: origin -->
+  <section class="slide" id="origin">
+    <div class="kicker">Походження</div>
+    <h2>Звідки це береться</h2>
+    <p>Іноді причина - одна катастрофічна подія, яка одразу розколює психіку надвоє. Але частіше історія інша: вона накопичується роками, в дитинстві, де було холодно і непередбачувано, а дорослі або не помічали почуттів дитини, або самі були джерелом страху.</p>
+    <div class="card accent"><ul>
+      <li>Втішитися не було в кого - або поруч не було дорослого, або той, хто мав заспокоювати, сам лякав.</li>
+      <li>Втекти фізично було неможливо, і дитина навчилася тікати всередину себе.</li>
+      <li>Роками почуттів дитини не помічали - і їй довелося навчитися не помічати їх самій.</li>
+      <li>Біль системно знецінювали («та ну, не вигадуй») - так виросла недовіра до власних відчуттів.</li>
+      <li>Психіка не могла «перетравити» те, що відбувається, цілком, і мозок заблокував частину спогадів, щоб дати їй рости далі.</li>
+    </ul></div>
+  </section>
+
+  <!-- SLIDE 5: strengths + shadow -->
+  <section class="slide" id="strengths">
+    <div class="kicker">Два боки</div>
+    <h2>Сильні сторони</h2>
+    <div class="card"><ul>
+      <li>Здатність занурюватися в таку глибоку концентрацію, що навколо може руйнуватися ремонт, а людина цього не почує.</li>
+      <li>Холоднокровність у кризі: поки всі панікують, саме ця людина стає спокійним і зібраним лідером.</li>
+      <li>Уміння дивитися на конфлікт «з балкона» - з філософської дистанції, не загрузаючи в дрібних чварах.</li>
+      <li>Багата уява як джерело справжньої творчості й художнього бачення.</li>
+      <li>Високий больовий поріг і здатність функціонувати там, де іншому було б уже нестерпно.</li>
+      <li>Гнучкість - здатність бути різним у різних контекстах без внутрішнього лицемірства.</li>
+      <li>На здоровому рівні - керована дисоціація: людина сама вирішує, коли «притлумити» себе, і легко повертається назад.</li>
+    </ul></div>
+  </section>
+
+  <section class="slide" id="shadow">
+    <div class="kicker">Два боки</div>
+    <h2>Тіньова сторона</h2>
+    <div class="card"><ul>
+      <li>Емоційна анестезія заважає прочувати важливі моменти життя, залишаючи відчуття себе «функціональним роботом».</li>
+      <li>Провали в пам'яті можуть стирати не деталі, а цілі шматки дитинства або недавні розмови.</li>
+      <li>Тіло живе ніби окремо від господаря: синці від кутів, ігнорований голод і втома.</li>
+      <li>У стресі настає туман у голові - думки перестають вибудовуватися в ланцюжок, і це не лінь, а тимчасове вимкнення частини мозку.</li>
+      <li>Відхід у себе під час конфлікту партнер читає як байдужість, хоча це капітуляція перевантаженої нервової системи, а не вибір.</li>
+      <li>Токсичний сором за власну «розібраність» - відчуття себе обманщиком через розрив між внутрішнім хаосом і спокійною зовнішністю.</li>
+    </ul></div>
+  </section>
+
+  <!-- SLIDE 6: relations & work -->
+  <section class="slide" id="relations">
+    <div class="kicker">Життя з цим характером</div>
+    <h2>У стосунках і в роботі</h2>
+    <div class="card"><p><strong>У стосунках.</strong> Партнер легко сприймає «відхід у себе» під час сварки за байдужість або бойкот, хоча це захисна реакція вимкнення, а не рішення покарати мовчанням. На відміну від шизоїда, дисоціативна людина насправді хоче близькості - просто вона здатна перевантажити її найсильніше. Допомагає заздалегідь, у спокійному стані, пояснити партнеру цю механіку і домовитися про паузу на 10-15 хвилин.</p></div>
+    <div class="card" style="margin-top:14px"><p><strong>У роботі.</strong> Робота часто відчувається безпечнішою за дім: чітка структура вмикає дорослу, зібрану частину особистості - людина розумна й ефективна, хоча часом сухувата. Вдома, де потрібна близькість і спонтанність, на перший план може вийти зовсім інша, вразлива частина - той самий директор, який тримає зал на нараді, а вдома губиться від простого запитання. У здоровому варіанті ця здатність стає професійною суперсилою - як у хірурга, що вимикає страх на час операції, щоб потім знову стати теплою людиною.</p></div>
+  </section>
+
+  <!-- SLIDE 7: growth -->
+  <section class="slide" id="growth">
+    <div class="kicker">Практика</div>
+    <h2>Шлях до балансу</h2>
+    <div class="card accent"><ul>
+      <li>У момент вимкнення не боріться силою волі - тихо нагадайте собі, що зараз безпечно, і вмикайтеся назад поступово.</li>
+      <li>Використовуйте заземлення через органи чуття: назвіть уголос п'ять речей, які бачите, чотири - які можете торкнутися, три звуки.</li>
+      <li>Відновлюйте зв'язок із тілом потроху - постукування, силові вправи, контрастний душ, обважнена ковдра.</li>
+      <li>Не витягуйте силою забуте з дитинства: прогалини в пам'яті - це шрами, що доводять, що ви вижили, і відступають самі, коли з'являється опора.</li>
+      <li>Складіть карту передвісників - ранні ознаки, що ви починаєте «спливати», і карту безпеки: місця, люди, фраза-нагадування.</li>
+      <li>На перших порах уникайте релаксації із заплющеними очима - краще працює активна усвідомленість: ходьба, малювання.</li>
+      <li>Говоріть із тривожною частиною себе не як із ворогом, а як на переговорах: «я чую, що ти стривожена, про що хочеш попередити?»</li>
+    </ul></div>
+    <div class="disclaimer">Якщо ці риси серйозно заважають жити, працювати або будувати стосунки - це привід звернутися до спеціаліста, а не боротися наодинці.</div>
+  </section>
+
+  <!-- SLIDE 8: takeaway -->
+  <section class="slide" id="takeaway">
+    <div class="kicker">Підсумок</div>
+    <h2>Що забрати з собою</h2>
+    <div class="quote">Дисоціація - не поломка і не удавання, а творче рішення, яке одного разу знайшла ваша психіка там, де інших виходів не було.</div>
+    <div class="quote">Почуття нікуди не поділися - вони на час заморожені, і їм можна обережно повернути тепло.</div>
+    <div class="quote">Соромитися цього захисту - все одно що соромитися температури під час хвороби: це не слабкість, а працюючий імунітет психіки.</div>
+    <div class="quote">Подорослішавши, ви можете подякувати цьому захисту за порятунок - і поступово навчити його нових способів бути зі світом.</div>
+    <p style="margin-top:18px">Якщо щось із цього відгукнулося - це не вирок, а просто впізнавання себе. А впізнавання - вже перший крок до того, щоб знову бути в своєму житті цілком.</p>
+  </section>
+
+  <div class="footer-nav">
+    <a href="../../index.html">← Пройти тест</a>
+    <span class="muted">Дисоціативний тип</span>
+  </div>
+</div>
+<script>(function(){var b=document.getElementById("themeToggle");
+var SUN='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+var MOON='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+function icon(){b.innerHTML=document.documentElement.getAttribute("data-theme")==="light"?MOON:SUN;}
+b.onclick=function(){var n=document.documentElement.getAttribute("data-theme")==="light"?"dark":"light";
+document.documentElement.setAttribute("data-theme",n);try{localStorage.setItem("chartheme",n)}catch(e){}icon();};
+icon();})();</script>
+<script>
+// Inside the Tilda embed the deck is one long page in a resizing frame: flag it
+// for CSS, report our height, and scroll the parent back to the top on arrival
+// so a visitor does not land mid-page with no way back except the browser.
+(function(){
+  if(window.parent===window) return;
+  document.documentElement.classList.add("in-frame");
+  var send=function(){
+    var h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);
+    try{window.parent.postMessage({type:"ctt:height",height:h},"*")}catch(e){}
+  };
+  try{window.parent.postMessage({type:"ctt:top"},"*")}catch(e){}
+  send();
+  window.addEventListener("load",send);
+  addEventListener("resize",send);
+  setTimeout(send,300); setTimeout(send,1200);
+})();
+</script>
+<script>
+// The language choice is shared with the test through localStorage; switching
+// here navigates to the same presentation in the next language.
+(function(){
+  var LANGS=["ru","uk","en"], HERE="uk", FILE="09-dissociative.html";
+  var box=document.querySelector(".corner-toggles");
+  if(!box) return;
+  var b=document.createElement("button");
+  b.id="langToggle"; b.title="Change language"; b.textContent=HERE.toUpperCase();
+  b.onclick=function(){
+    var next=LANGS[(LANGS.indexOf(HERE)+1)%LANGS.length];
+    try{localStorage.setItem("chartlang",next)}catch(e){}
+    location.href=(next==="ru"?"../":"../"+next+"/")+FILE;
+  };
+  box.insertBefore(b, box.firstChild);
+})();
+</script>
+</body>
+</html>

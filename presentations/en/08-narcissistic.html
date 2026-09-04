@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Narcissistic Type - Type Presentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<script>(function(){var t=null;try{t=localStorage.getItem("chartheme")}catch(e){}
+if(!t)t=(window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches)?"light":"dark";
+document.documentElement.setAttribute("data-theme",t);})();</script>
+<style>
+  :root{ --accent:#8c85b0; --accent-soft:rgba(140,133,176,.13); }
+  html[data-theme="dark"]{
+    --bg:#151715; --card:#1e221f; --card2:#252a26; --ink:#eae9e2; --muted:#a1a69c;
+    --line:#333b34; --accent-ui:var(--accent); --on-accent:#141814; --shadow:rgba(0,0,0,.30);
+    --warn-bg:rgba(224,180,88,.08); --warn-line:rgba(224,180,88,.35); --warn-ink:#d9c390;
+  }
+  html[data-theme="light"]{
+    --bg:#f6f3ec; --card:#ffffff; --card2:#f1eee6; --ink:#2e2c28; --muted:#6f6d64;
+    --line:#e2ddd0; --accent-ui:color-mix(in srgb, var(--accent) 65%, #2e2c28); --on-accent:#ffffff; --shadow:rgba(70,65,50,.10);
+    --warn-bg:rgba(176,138,50,.08); --warn-line:rgba(176,138,50,.35); --warn-ink:#7c6a3a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
+  html{-webkit-text-size-adjust:100%}
+  html{scroll-behavior:smooth}
+  body{
+    background:radial-gradient(1100px 700px at 75% -10%, var(--accent-soft) 0%, var(--bg) 60%);
+    color:var(--ink); font-family:"Inter","SF Pro Text",-apple-system,"Segoe UI",Roboto,Arial,sans-serif; font-size:16.5px; line-height:1.65;
+    transition:background-color .3s, color .3s;
+  }
+  .deck{max-width:860px; margin:0 auto; padding:0 22px}
+  section.slide{min-height:92vh; padding:64px 0 48px; border-bottom:1px solid var(--line); display:flex; flex-direction:column; justify-content:center}
+  /* Inside an iframe the deck is one scrolling page: 92vh per slide would
+     fight the auto-sizing frame and leave huge empty gaps. */
+  html.in-frame .slide{min-height:auto; padding:40px 0 32px; justify-content:flex-start}
+  section.slide:last-child{border-bottom:none}
+  .kicker{text-transform:uppercase; letter-spacing:2.5px; font-size:12px; font-weight:600; color:var(--accent-ui); margin-bottom:12px}
+  h1{font-family:"Literata","PT Serif",Georgia,serif; font-size:40px; font-weight:600; line-height:1.2; margin-bottom:14px}
+  h2{font-family:"Literata","PT Serif",Georgia,serif; font-size:27px; font-weight:600; margin-bottom:18px}
+  .lead{color:var(--muted); font-size:18px; max-width:640px}
+  p{margin:10px 0}
+  ul{margin:8px 0 8px 22px}
+  li{margin:9px 0}
+  .muted{color:var(--muted)}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px 24px; margin:12px 0; box-shadow:0 2px 12px var(--shadow)}
+  .card.accent{border-left:4px solid var(--accent)}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  @media(max-width:640px){
+    .grid2{grid-template-columns:1fr}
+    h1{font-size:28px} h2{font-size:22px}
+    .deck{padding:0 16px}
+    section.slide{min-height:auto; padding:44px 0 34px}
+    .card{padding:16px 16px}
+    .quote{font-size:17px}
+    .lead{font-size:16px}
+    .theme-toggle{top:10px; right:10px; width:38px; height:38px}
+  }
+  .quote{font-family:"Literata","PT Serif",Georgia,serif; font-style:italic; font-size:19px; color:var(--ink); border-left:3px solid var(--accent); padding:6px 0 6px 18px; margin:18px 0}
+  .pill{display:inline-block; font-size:13px; color:var(--accent-ui); border:1px solid var(--accent); border-radius:20px; padding:4px 14px; margin:4px 6px 4px 0}
+  .footer-nav{display:flex; justify-content:space-between; padding:28px 0 60px; font-size:14px}
+  a{color:var(--accent-ui)}
+  .disclaimer{background:var(--warn-bg); border:1px solid var(--warn-line); color:var(--warn-ink); border-radius:12px; padding:14px 18px; font-size:14px; margin-top:22px}
+
+  .theme-toggle{position:fixed; top:16px; right:16px; z-index:50; width:42px; height:42px; border-radius:50%;
+    border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; font-size:17px;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px var(--shadow)}
+  .corner-toggles{position:fixed; top:16px; right:18px; z-index:20; display:flex; gap:8px}
+  .corner-toggles button{width:38px; height:38px; display:flex; align-items:center; justify-content:center;
+    background:var(--card); color:var(--muted); border:1px solid var(--line); border-radius:10px; cursor:pointer;
+    font-family:inherit; font-size:12px; font-weight:700; letter-spacing:.5px; transition:color .2s, border-color .2s}
+  .corner-toggles button:hover{color:var(--ink); border-color:var(--accent)}
+  @media (max-width:560px){.corner-toggles{top:10px; right:10px}}
+  .theme-toggle:hover{border-color:var(--accent)}
+
+</style>
+</head>
+<body>
+<div class="corner-toggles">
+  <button class="theme-toggle" id="themeToggle" title="Сменить тему"></button>
+</div>
+<div class="deck">
+
+  <!-- SLIDE 1: title -->
+  <section class="slide">
+    <div class="kicker">Character Types - 08 of 9</div>
+    <h1>Narcissistic Type</h1>
+    <p class="lead">Between pride and shame - a race to prove your own worth in which final victory is impossible.</p>
+    <div class="disclaimer">A character type is a stable "handwriting" of a healthy personality - not a diagnosis and not a sentence.</div>
+    <div class="toc">
+      <a href="#essence">How This Character Works</a>
+      <a href="#origin">Where It Comes From</a>
+      <a href="#strengths">Strengths</a>
+      <a href="#shadow">The Shadow Side</a>
+      <a href="#relations">In Relationships and at Work</a>
+      <a href="#growth">The Path to Balance</a>
+      <a href="#takeaway">What to Take With You</a>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: vignette -->
+  <section class="slide" id="vignette">
+    <div class="kicker">Do You Recognize Yourself?</div>
+    <h2>The Kitchen Renovation Still Isn't Done</h2>
+    <p>Yesterday you closed a big project, and all evening it was easy to breathe. This morning the joy has already evaporated: what now, what will I use to prove I'm worth something next? A colleague made a harmless joke about your presentation - and it's been running through your head all day like a verdict. Someone at the company talks about their own success, and instead of feeling happy for them, something inside you tightens: someone already has their kitchen renovation done, and you don't. Someone you recently admired showed one very human weakness - and suddenly you find them uninteresting, almost a stranger. And alone with yourself, with no tasks and no audience, what washes over you isn't peace but a strange emptiness, as if no one were home inside. If any of this resonates - it's not because something is "wrong" with you; it's just how the logic of this character works.</p>
+  </section>
+
+  <!-- SLIDE 3: essence -->
+  <section class="slide" id="essence">
+    <div class="kicker">How This Character Works</div>
+    <h2>A Leaky Vessel That Can't Stay Full for Long</h2>
+    <p>At the core is a self-esteem built not as a solid foundation but as a leaky vessel: however many achievements you pour into it, they gradually drain out, and the vessel is empty again. The moment a triumph ends, the "fuel" evaporates, and a new victory is needed - life turns into an endless race, where stopping doesn't feel like rest but like collapse. Being the best here isn't ambition - it's a way of surviving psychologically: if I'm not on top, it's as though I become invisible or disappear entirely.</p>
+    <p>The central conflict is a seesaw between a sense of greatness and a bottomless inner worthlessness, between pride and searing shame. A mistake here isn't a work incident - it feels like proof: "I'm defective." Guilt says "I did something bad," and it can be fixed; shame says "I am bad," and it paralyzes completely.</p>
+    <p>The main defense is the cycle of idealization and devaluation: on meeting someone "incredible," a person joins in their shine and, for a while, stops feeling their own inadequacy - but the moment reality reveals an ordinary weakness in that other person, yesterday's idol instantly loses all value. The reason is that the psyche finds it hard to hold onto a whole picture of "talented and imperfect at the same time" - because this style of character also sees itself in fragments, now a genius, now worthless. Alongside this sit other defenses: rage in response to being shamed, denial of what happened, and turning people into functions - a source of status, a resource, a means of comfort.</p>
+    <p>Inner emptiness is the flip side of the brilliant facade: while all the energy goes into the image, the connection to genuine feeling atrophies, and without external "mirrors" - praise, admiration - the person stops feeling that they exist at all. There are two poles of the same story: the "thick-skinned" version openly displays superiority and devalues others, while the "thin-skinned" version suffers silently, retreating into fantasies of recognition. Behind both masks is the same need - to be seen and accepted as you are.</p>
+  </section>
+
+  <!-- SLIDE 4: origin -->
+  <section class="slide" id="origin">
+    <div class="kicker">Origins</div>
+    <h2>Where It Comes From</h2>
+    <p>The mechanism usually forms in childhood, when love and attention were conditional, and the child, as it were, engraves an inner rule: I am valued not for who I am, but for what I do - for grades, medals, model behavior. In response, a "false self" is born: a brilliant facade to present to the world, while the real self, with all its weaknesses, hides deep inside, behind the public face, far from the inner workings.</p>
+    <div class="card accent"><ul>
+      <li>Mistakes were mocked, met with withdrawal of love, or with cold disappointment - and that's how an internal "outside critic" took up residence, attacking at the slightest deviation from the ideal.</li>
+      <li>Identity was built on flawlessness rather than on the right to make mistakes, which every person is properly entitled to simply by being born.</li>
+      <li>Normally there's a supportive inner voice confirming one's worth regardless of circumstances; here it's replaced by an external mirror - other people's opinions.</li>
+      <li>This system of defenses was once not a whim, but a working way to survive under conditions of conditional love.</li>
+    </ul></div>
+  </section>
+
+  <!-- SLIDE 5: strengths + shadow -->
+  <section class="slide" id="strengths">
+    <div class="kicker">Two Sides</div>
+    <h2>Strengths</h2>
+    <div class="card"><ul>
+      <li>High ambition and energy aimed at results - real fuel, if you steer it rather than becoming its hostage.</li>
+      <li>The ability to become a benchmark specialist in your field, when the drive is fueled by genuine interest rather than only by fear of failure.</li>
+      <li>The ability to make a strong impression, to inspire, and to lead.</li>
+      <li>A readiness to take risks, pursue status, and climb the hierarchy.</li>
+      <li>The potential to eventually turn a hunger for outside admiration into genuine self-respect.</li>
+      <li>A capacity for sincerity and a strong personal brand, if you dare to show more than just your ideal side.</li>
+    </ul></div>
+  </section>
+
+  <section class="slide" id="shadow">
+    <div class="kicker">Two Sides</div>
+    <h2>The Shadow Side</h2>
+    <div class="card"><ul>
+      <li>Chronic dependence of self-esteem on outside recognition, likes, and praise.</li>
+      <li>An inability to calmly bear someone else's success: envy as a signal of one's own "inadequacy."</li>
+      <li>A functional attitude toward people - the other person is seen as a resource or a threat, not a valuable human being, which ends up in loneliness.</li>
+      <li>Narcissistic rage as a defense against injury to self-esteem - in response to rejection, criticism, or disagreement.</li>
+      <li>Impostor syndrome: a feeling that the successes belong not to the real self but to the ideal facade.</li>
+      <li>Emptiness and boredom alone with yourself, guilt over resting, a risk of burnout - the body is often the only thing capable of stopping this race.</li>
+    </ul></div>
+  </section>
+
+  <!-- SLIDE 6: relations & work -->
+  <section class="slide" id="relations">
+    <div class="kicker">Living With This Character</div>
+    <h2>In Relationships and at Work</h2>
+    <div class="card"><ul>
+      <li>Closeness feels like vulnerability: showing an imperfect side means risking rejection, so distance or functional relationships tend to form instead, where the partner confirms status or covers practical needs.</li>
+      <li>To trust is to become dependent on someone else, and dependence is equated with helplessness; hence the familiar cycle - fast idealization of a partner and just as fast devaluation at the first sign of human weakness.</li>
+      <li>At work, the result becomes the only thing that matters - it's the only thing you can present to the world for recognition - while the process itself feels like a zone of risk for error; joy over a result quickly gives way to anxiety about the next goal.</li>
+      <li>High productivity often coexists with impostor feelings - "it wasn't really me who achieved this, it was the ideal image I'm pretending to be" - and the price of career growth is often loneliness and a habit of using people as tools.</li>
+    </ul></div>
+  </section>
+
+  <!-- SLIDE 7: growth -->
+  <section class="slide" id="growth">
+    <div class="kicker">Practice</div>
+    <h2>The Path to Balance</h2>
+    <div class="card accent"><ul>
+      <li>Separate your human worth from your results: notice the moment when needing to be the best at all costs is driven by fear rather than genuine interest in the work.</li>
+      <li>Grant yourself the right to an average result in at least some areas of life - write down, in writing, what you're objectively good at and what you're just ordinary at, and hold both lists at once.</li>
+      <li>Translate searing shame into working guilt, and then into experience: "I made a mistake, that's unpleasant, but it doesn't make me a bad person" - with a concrete takeaway for next time.</li>
+      <li>Train your ability to see people in shades of gray: recall three strengths and three weaknesses of someone you recently idealized or devalued, and hold both pictures at once.</li>
+      <li>Lower the weight of outside evaluation through a "space free of usefulness" - from time to time do something with no aim of impressing anyone, watching only the process.</li>
+      <li>Practice small acts of self-disclosure - share not only your ideal side but also your doubts - and grow a genuine, disinterested curiosity about people as individuals with their own inner world, starting not from pity but from curiosity.</li>
+      <li>Claim your successes by listing the effort you actually put in rather than "luck," and keep a self-support diary, legitimizing rest as a condition for clarity of mind, not as playing hooky.</li>
+    </ul></div>
+    <div class="disclaimer">If any of these traits are seriously getting in the way of your life, relationships, or work - that's a reason to discuss them with a specialist, not to fight it alone.</div>
+  </section>
+
+  <!-- SLIDE 8: takeaway -->
+  <section class="slide" id="takeaway">
+    <div class="kicker">In Closing</div>
+    <h2>What to Take With You</h2>
+    <div class="quote">You are valued not only for what you do, but for who you are.</div>
+    <div class="quote">A mistake is an unpleasant episode, not proof of inner defectiveness.</div>
+    <div class="quote">Inner emptiness isn't a malfunction - it's a signal that too much energy is going into the image and too little into actually living.</div>
+    <div class="quote">Being simply human - with ordinary weaknesses and no ideal facade - is already enough.</div>
+    <p style="margin-top:18px">This character grew out of an understandable logic: once, it helped you survive where love was conditional. That same energy, aimed not at endless self-justification but at work that genuinely interests you, and at people you let yourself see fully, can become not a prison but a real source of strength.</p>
+  </section>
+
+  <div class="footer-nav">
+    <a href="../../index.html">&larr; Take the Test</a>
+    <span class="muted">Narcissistic Type</span>
+  </div>
+</div>
+<script>(function(){var b=document.getElementById("themeToggle");
+var SUN='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+var MOON='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+function icon(){b.innerHTML=document.documentElement.getAttribute("data-theme")==="light"?MOON:SUN;}
+b.onclick=function(){var n=document.documentElement.getAttribute("data-theme")==="light"?"dark":"light";
+document.documentElement.setAttribute("data-theme",n);try{localStorage.setItem("chartheme",n)}catch(e){}icon();};
+icon();})();</script>
+<script>
+// Inside the Tilda embed the deck is one long page in a resizing frame: flag it
+// for CSS, report our height, and scroll the parent back to the top on arrival
+// so a visitor does not land mid-page with no way back except the browser.
+(function(){
+  if(window.parent===window) return;
+  document.documentElement.classList.add("in-frame");
+  var send=function(){
+    var h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);
+    try{window.parent.postMessage({type:"ctt:height",height:h},"*")}catch(e){}
+  };
+  try{window.parent.postMessage({type:"ctt:top"},"*")}catch(e){}
+  send();
+  window.addEventListener("load",send);
+  addEventListener("resize",send);
+  setTimeout(send,300); setTimeout(send,1200);
+})();
+</script>
+<script>
+// The language choice is shared with the test through localStorage; switching
+// here navigates to the same presentation in the next language.
+(function(){
+  var LANGS=["ru","uk","en"], HERE="en", FILE="08-narcissistic.html";
+  var box=document.querySelector(".corner-toggles");
+  if(!box) return;
+  var b=document.createElement("button");
+  b.id="langToggle"; b.title="Change language"; b.textContent=HERE.toUpperCase();
+  b.onclick=function(){
+    var next=LANGS[(LANGS.indexOf(HERE)+1)%LANGS.length];
+    try{localStorage.setItem("chartlang",next)}catch(e){}
+    location.href=(next==="ru"?"../":"../"+next+"/")+FILE;
+  };
+  box.insertBefore(b, box.firstChild);
+})();
+</script>
+</body>
+</html>

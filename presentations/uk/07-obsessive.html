@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Обсесивно-компульсивний тип - презентація типу</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<script>(function(){var t=null;try{t=localStorage.getItem("chartheme")}catch(e){}
+if(!t)t=(window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches)?"light":"dark";
+document.documentElement.setAttribute("data-theme",t);})();</script>
+<style>
+  :root{ --accent:#5f9490; --accent-soft:rgba(95,148,144,.13); }
+  html[data-theme="dark"]{
+    --bg:#151715; --card:#1e221f; --card2:#252a26; --ink:#eae9e2; --muted:#a1a69c;
+    --line:#333b34; --accent-ui:var(--accent); --on-accent:#141814; --shadow:rgba(0,0,0,.30);
+    --warn-bg:rgba(224,180,88,.08); --warn-line:rgba(224,180,88,.35); --warn-ink:#d9c390;
+  }
+  html[data-theme="light"]{
+    --bg:#f6f3ec; --card:#ffffff; --card2:#f1eee6; --ink:#2e2c28; --muted:#6f6d64;
+    --line:#e2ddd0; --accent-ui:color-mix(in srgb, var(--accent) 65%, #2e2c28); --on-accent:#ffffff; --shadow:rgba(70,65,50,.10);
+    --warn-bg:rgba(176,138,50,.08); --warn-line:rgba(176,138,50,.35); --warn-ink:#7c6a3a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
+  html{-webkit-text-size-adjust:100%}
+  html{scroll-behavior:smooth}
+  body{
+    background:radial-gradient(1100px 700px at 75% -10%, var(--accent-soft) 0%, var(--bg) 60%);
+    color:var(--ink); font-family:"Inter","SF Pro Text",-apple-system,"Segoe UI",Roboto,Arial,sans-serif; font-size:16.5px; line-height:1.65;
+    transition:background-color .3s, color .3s;
+  }
+  .deck{max-width:860px; margin:0 auto; padding:0 22px}
+  section.slide{min-height:92vh; padding:64px 0 48px; border-bottom:1px solid var(--line); display:flex; flex-direction:column; justify-content:center}
+  /* Inside an iframe the deck is one scrolling page: 92vh per slide would
+     fight the auto-sizing frame and leave huge empty gaps. */
+  html.in-frame .slide{min-height:auto; padding:40px 0 32px; justify-content:flex-start}
+  section.slide:last-child{border-bottom:none}
+  .kicker{text-transform:uppercase; letter-spacing:2.5px; font-size:12px; font-weight:600; color:var(--accent-ui); margin-bottom:12px}
+  h1{font-family:"Literata","PT Serif",Georgia,serif; font-size:40px; font-weight:600; line-height:1.2; margin-bottom:14px}
+  h2{font-family:"Literata","PT Serif",Georgia,serif; font-size:27px; font-weight:600; margin-bottom:18px}
+  .lead{color:var(--muted); font-size:18px; max-width:640px}
+  p{margin:10px 0}
+  ul{margin:8px 0 8px 22px}
+  li{margin:9px 0}
+  .muted{color:var(--muted)}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px 24px; margin:12px 0; box-shadow:0 2px 12px var(--shadow)}
+  .card.accent{border-left:4px solid var(--accent)}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  @media(max-width:640px){
+    .grid2{grid-template-columns:1fr}
+    h1{font-size:28px} h2{font-size:22px}
+    .deck{padding:0 16px}
+    section.slide{min-height:auto; padding:44px 0 34px}
+    .card{padding:16px 16px}
+    .quote{font-size:17px}
+    .lead{font-size:16px}
+    .theme-toggle{top:10px; right:10px; width:38px; height:38px}
+  }
+  .quote{font-family:"Literata","PT Serif",Georgia,serif; font-style:italic; font-size:19px; color:var(--ink); border-left:3px solid var(--accent); padding:6px 0 6px 18px; margin:18px 0}
+  .pill{display:inline-block; font-size:13px; color:var(--accent-ui); border:1px solid var(--accent); border-radius:20px; padding:4px 14px; margin:4px 6px 4px 0}
+  .footer-nav{display:flex; justify-content:space-between; padding:28px 0 60px; font-size:14px}
+  a{color:var(--accent-ui)}
+  .disclaimer{background:var(--warn-bg); border:1px solid var(--warn-line); color:var(--warn-ink); border-radius:12px; padding:14px 18px; font-size:14px; margin-top:22px}
+
+  .theme-toggle{position:fixed; top:16px; right:16px; z-index:50; width:42px; height:42px; border-radius:50%;
+    border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; font-size:17px;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px var(--shadow)}
+  .corner-toggles{position:fixed; top:16px; right:18px; z-index:20; display:flex; gap:8px}
+  .corner-toggles button{width:38px; height:38px; display:flex; align-items:center; justify-content:center;
+    background:var(--card); color:var(--muted); border:1px solid var(--line); border-radius:10px; cursor:pointer;
+    font-family:inherit; font-size:12px; font-weight:700; letter-spacing:.5px; transition:color .2s, border-color .2s}
+  .corner-toggles button:hover{color:var(--ink); border-color:var(--accent)}
+  @media (max-width:560px){.corner-toggles{top:10px; right:10px}}
+  .theme-toggle:hover{border-color:var(--accent)}
+
+</style>
+</head>
+<body>
+<div class="corner-toggles">
+  <button class="theme-toggle" id="themeToggle" title="Сменить тему"></button>
+</div>
+<div class="deck">
+
+  <!-- SLIDE 1: title -->
+  <section class="slide">
+    <div class="kicker">Типи характеру · 07 з 9</div>
+    <h1>Обсесивно-компульсивний тип</h1>
+    <p class="lead">Розум як найбезпечніше місце на світі: порядок, дисципліна і контроль замість невизначеності та живих почуттів.</p>
+    <div class="disclaimer">Тип характеру - це стійкий «почерк» здорової особистості, а не діагноз.</div>
+    <div class="toc">
+      <a href="#recognize">Впізнаєте себе?</a>
+      <a href="#essence">Як влаштований цей характер</a>
+      <a href="#origin">Звідки це береться</a>
+      <a href="#strengths">Сильні сторони</a>
+      <a href="#shadow">Тіньова сторона</a>
+      <a href="#relations">У стосунках і в роботі</a>
+      <a href="#growth">Шлях до балансу</a>
+      <a href="#takeaway">Що забрати з собою</a>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: recognize -->
+  <section class="slide" id="recognize">
+    <div class="kicker">Впізнаєте себе?</div>
+    <h2>Список справ важливіший за свято</h2>
+    <p>Вечір п'ятниці. На столі - розписаний план на вихідні, і від одного погляду на нього стає спокійніше. Хтось кличе спонтанно поїхати за місто - гарна ідея, але всередині одразу тривога: а як же незроблені справи. Ви погоджуєтеся, але півдороги подумки «дошліфовуєте» звіт, який давно готовий, просто не ідеальний. Колега забув кому у листі клієнту - і ви півночі не спите, ніби помилилися самі. Вам кажуть «розслабся, ти надто суворий до себе» - і це дратує, адже без суворості, здається, все розвалиться. Питання лише в тому, що «правильно» - список, який ніколи не закривається.</p>
+  </section>
+
+  <!-- SLIDE 3: essence -->
+  <section class="slide" id="essence">
+    <div class="kicker">Як влаштований цей характер</div>
+    <h2>Бути живим - чи бути ідеальним</h2>
+    <p>В основі цього характеру - негласна угода: розум обмінюється на живі почуття. Логіка, порядок і дисципліна стають щитом проти невизначеності світу і проти власних сильних емоцій, які відчуваються як небезпека, здатна позбавити самовладання. Голова - найнадійніше місце, адже там усе піддається контролю; світ освоюється через <em>робити</em> і <em>, а не через проживання.</em>Центральний конфлікт - між бажанням бути живим, спонтанним, людяним - і внутрішньою вимогою бути бездоганним. Спонтанність приноситься в жертву контролю, і життя перетворюється на низку «мушу, треба, зобов'язаний», де «хочу» звучить рідко.</p>
+    <p>Головний захист - інтелектуалізація: замість «мені боляче, я злюся» вмикаються ввічливі міркування про причини ситуації. Це відсуває дискомфорт, але вимиває зі життя справжню близькість. Другий механізм - злиття думки і дії: подумав про щось погане - і здається, що вчинок уже майже скоєно, починається боротьба з власною думкою, яка тільки посилює нав'язливість.</p>
+    <p>Контроль дає ілюзію: якщо бути достатньо пильним, нічого поганого не станеться. Але ілюзія вимагає величезної енергії - і рано чи пізно напруга прориває греблю зривом там, де, здавалося б, усе було під контролем.</p>
+    <p>Походження</p>
+  </section>
+
+  <!-- SLIDE 4: origin -->
+  <section class="slide" id="origin">
+    <div class="kicker">Звідки це береться</div>
+    <h2>Механізм закладається рано: єдиний спосіб отримати схвалення або уникнути критики - бути правильним і розсудливим. З часом це перетворюється на жорсткий внутрішній кодекс, який людина носить із собою все життя.</h2>
+    <p>Помилки в дитинстві не прощалися, а висміювалися - суворий критикуючий батько з часом став внутрішнім голосом.</p>
+    <div class="card accent"><ul>
+      <li>Дитині часто доводилося бути «дорослішою за своїх батьків»: самій перевіряти, чи зачинені двері, бо дорослі могли забути, - або підлаштовуватися під правила, які змінювалися без попередження.</li>
+      <li>У відповідь народилася стратегія: «я контролюватиму все сам, щоб ніхто не зміг застати мене зненацька».</li>
+      <li>Дитина могла відчувати себе відповідальною за настрій батьків - «мама сумна, отже, я зробив щось не так», - і ця звичка шукати причину бід у собі закріпилася в хронічну провину.</li>
+      <li>Провина парадоксальним чином заспокоювала: «якщо я винен, отже, ще можу виправити» - визнати власне безсилля було набагато болючіше.</li>
+      <li>Два боки</li>
+    </ul></div>
+  </section>
+
+  <!-- SLIDE 5: strengths + shadow -->
+  <section class="slide" id="strengths">
+    <div class="kicker">Сильні сторони</div>
+    <h2>Надійність і дисципліна такого масштабу, що значна частина нашого світу стоїть на плечах саме таких людей.</h2>
+    <div class="card"><ul>
+      <li>Увага до деталей і здатність доводити аналіз до глибини, недоступної швидшим характерам.</li>
+      <li>Чесність і системність - слово тримається, розпочате доводиться до кінця.</li>
+      <li>Уміння вибудувати структуру і порядок там, де інші губляться.</li>
+      <li>На здоровому рівні - цілеспрямованість, розумний перфекціонізм і природне лідерство: люди бачать у такій людині опору.</li>
+      <li>Такій людині можна довірити найскладніший проєкт - і бути впевненим, що вона не підведе.</li>
+      <li>Здатність визнати помилку, зробити висновки і піти далі, не дозволяючи роздратуванню зруйнувати весь день.</li>
+      <li>Два боки</li>
+    </ul></div>
+  </section>
+
+  <section class="slide" id="shadow">
+    <div class="kicker">Тіньова сторона</div>
+    <h2>Хронічна тривога від потреби тримати під контролем усе навколо - контроль лише маскує тривогу, не прибираючи причину.</h2>
+    <div class="card"><ul>
+      <li>Труднощі у прийнятті рішень: розум нескінченно «пережовує» інформацію в пошуках бездоганного варіанта, якого не існує.</li>
+      <li>Страх помилки, рівний за силою страху морального падіння, - хиба сприймається як доказ некомпетентності.</li>
+      <li>Хронічне, часто ірраціональне почуття провини - за думки, за продуктивність, навіть за чужі емоції.</li>
+      <li>Прокрастинація, яка насправді не лінь, а страх не відповідати власному ідеалу.</li>
+      <li>Труднощі у вираженні тепла: критика партнера часто виявляється спробою зробити його передбачуванішим.</li>
+      <li>Трудоголізм як втеча від внутрішньої порожнечі і нездатність делегувати чи просити про допомогу.</li>
+      <li>Чорно-біле мислення: середнього шляху ніби не існує.</li>
+      <li>Життя з цим характером</li>
+    </ul></div>
+  </section>
+
+  <!-- SLIDE 6: relations & work -->
+  <section class="slide" id="relations">
+    <div class="kicker">У стосунках і в роботі</div>
+    <h2>У стосунках.</h2>
+    <div class="card"><p><strong>Прагнення «покращити» партнера і постійна критика - як не дивно, не нелюбов, а спроба зробити його передбачуваним і безпечним; партнером це часто сприймається як тиранія. Закритість захищає від страху, що чужі почуття «захлеснуть», тому в напружені моменти вмикаються логіка й поради замість обіймів. Партнери зазвичай скаржаться не на організованість, а на те, що за правилами не видно тепла.</strong> У роботі.</p></div>
+    <div class="card" style="margin-top:14px"><p><strong>Трудоголізм тут рідко про любов до професії - частіше це втеча від внутрішньої порожнечі у сферу з зрозумілими правилами: «якщо не страждав у процесі - значить, схалтурив». Важко сказати «ні» і делегувати: відмова відчувається як некомпетентність, і людина бере на себе дедалі більше, доки продуктивність не стає в'язницею. Фіксація на деталях затуляє загальну мету: за деревами не видно лісу.</strong> Практика</p></div>
+  </section>
+
+  <!-- SLIDE 7: growth -->
+  <section class="slide" id="growth">
+    <div class="kicker">Шлях до балансу</div>
+    <h2>Змістіть фокус із «правильності» на «достатність»: більшості завдань не потрібне ідеальне рішення, їм достатньо бути непоганими.</h2>
+    <div class="card accent"><ul>
+      <li>Досліджуйте письмово, що найстрашніше могло б статися всередині вас, якби на день відмовитися від усіх списків, - так знаходиться страх за прагненням до порядку.</li>
+      <li>Намалюйте «межу свого впливу»: коло з тим, на що ви реально можете вплинути, і зовні - те, що намагаєтеся контролювати, але не можете.</li>
+      <li>Вирощуйте внутрішнього адвоката замість внутрішнього судді: знайдіть три причини, чому помилка була корисна або неминуча, і рухайтеся далі без самобичування.</li>
+      <li>Розділяйте реальну провину, за якою стоїть намір, і токсичну провину - емоційний шум без нього.</li>
+      <li>Використовуйте заземлення 5-4-3-2-1: п'ять предметів, чотири відчуття, три звуки, два запахи, один смак, - щоб повернутися з голови в тіло.</li>
+      <li>Легалізуйте відпочинок: виділіть «зону, вільну від користі» і ставтеся до неї як до умови, а не до нагороди.</li>
+      <li>Заплануйте один свідомий «провал» на тиждень і помітьте, що світ не зруйнувався.</li>
+      <li>Якщо якісь із цих рис серйозно заважають жити, стосункам або роботі - це привід обговорити їх зі спеціалістом, а не боротися наодинці.</li>
+    </ul></div>
+    <div class="disclaimer">Підсумок</div>
+  </section>
+
+  <!-- SLIDE 8: takeaway -->
+  <section class="slide" id="takeaway">
+    <div class="kicker">Що забрати з собою</div>
+    <h2>Контроль не позбавляє від тривоги - він лише тимчасово маскує її і змушує бігти по колу дедалі швидше.</h2>
+    <div class="quote">Рішень без втрат не буває: будь-який вибір тягне за собою відмову від чогось іншого - це нормальна ціна дорослого життя, а не привід шукати бездоганний варіант.</div>
+    <div class="quote">Вашу особистість визначають вчинки і вибори, а не думки, які приходять у голову самі по собі.</div>
+    <div class="quote">Обсесивно-компульсивні риси - це величезний дар, якщо вони служать вам, а не ви їм.</div>
+    <div class="quote">Порядок і увага до деталей - не те, від чого потрібно позбуватися. Справа не в тому, щоб стати іншою людиною, а в тому, щоб іноді дозволяти собі бути неідеальним - і виявляти, що світ від цього не руйнується.</div>
+    <p style="margin-top:18px">← Пройти тест</p>
+  </section>
+
+  <div class="footer-nav">
+    <a href="../../index.html">Обсесивно-компульсивний тип</a>
+    <span class="muted">Обсесивно-компульсивний тип</span>
+  </div>
+</div>
+<script>(function(){var b=document.getElementById("themeToggle");
+var SUN='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+var MOON='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+function icon(){b.innerHTML=document.documentElement.getAttribute("data-theme")==="light"?MOON:SUN;}
+b.onclick=function(){var n=document.documentElement.getAttribute("data-theme")==="light"?"dark":"light";
+document.documentElement.setAttribute("data-theme",n);try{localStorage.setItem("chartheme",n)}catch(e){}icon();};
+icon();})();</script>
+<script>
+// Inside the Tilda embed the deck is one long page in a resizing frame: flag it
+// for CSS, report our height, and scroll the parent back to the top on arrival
+// so a visitor does not land mid-page with no way back except the browser.
+(function(){
+  if(window.parent===window) return;
+  document.documentElement.classList.add("in-frame");
+  var send=function(){
+    var h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);
+    try{window.parent.postMessage({type:"ctt:height",height:h},"*")}catch(e){}
+  };
+  try{window.parent.postMessage({type:"ctt:top"},"*")}catch(e){}
+  send();
+  window.addEventListener("load",send);
+  addEventListener("resize",send);
+  setTimeout(send,300); setTimeout(send,1200);
+})();
+</script>
+<script>
+// The language choice is shared with the test through localStorage; switching
+// here navigates to the same presentation in the next language.
+(function(){
+  var LANGS=["ru","uk","en"], HERE="uk", FILE="07-obsessive.html";
+  var box=document.querySelector(".corner-toggles");
+  if(!box) return;
+  var b=document.createElement("button");
+  b.id="langToggle"; b.title="Change language"; b.textContent=HERE.toUpperCase();
+  b.onclick=function(){
+    var next=LANGS[(LANGS.indexOf(HERE)+1)%LANGS.length];
+    try{localStorage.setItem("chartlang",next)}catch(e){}
+    location.href=(next==="ru"?"../":"../"+next+"/")+FILE;
+  };
+  box.insertBefore(b, box.firstChild);
+})();
+</script>
+</body>
+</html>

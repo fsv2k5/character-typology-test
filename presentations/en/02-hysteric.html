@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Hysterical (Histrionic) Type - Character Type Presentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<script>(function(){var t=null;try{t=localStorage.getItem("chartheme")}catch(e){}
+if(!t)t=(window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches)?"light":"dark";
+document.documentElement.setAttribute("data-theme",t);})();</script>
+<style>
+  :root{ --accent:#c9955c; --accent-soft:rgba(201,149,92,.13); }
+  html[data-theme="dark"]{
+    --bg:#151715; --card:#1e221f; --card2:#252a26; --ink:#eae9e2; --muted:#a1a69c;
+    --line:#333b34; --accent-ui:var(--accent); --on-accent:#141814; --shadow:rgba(0,0,0,.30);
+    --warn-bg:rgba(224,180,88,.08); --warn-line:rgba(224,180,88,.35); --warn-ink:#d9c390;
+  }
+  html[data-theme="light"]{
+    --bg:#f6f3ec; --card:#ffffff; --card2:#f1eee6; --ink:#2e2c28; --muted:#6f6d64;
+    --line:#e2ddd0; --accent-ui:color-mix(in srgb, var(--accent) 65%, #2e2c28); --on-accent:#ffffff; --shadow:rgba(70,65,50,.10);
+    --warn-bg:rgba(176,138,50,.08); --warn-line:rgba(176,138,50,.35); --warn-ink:#7c6a3a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
+  html{-webkit-text-size-adjust:100%}
+  html{scroll-behavior:smooth}
+  body{
+    background:radial-gradient(1100px 700px at 75% -10%, var(--accent-soft) 0%, var(--bg) 60%);
+    color:var(--ink); font-family:"Inter","SF Pro Text",-apple-system,"Segoe UI",Roboto,Arial,sans-serif; font-size:16.5px; line-height:1.65;
+    transition:background-color .3s, color .3s;
+  }
+  .deck{max-width:860px; margin:0 auto; padding:0 22px}
+  section.slide{min-height:92vh; padding:64px 0 48px; border-bottom:1px solid var(--line); display:flex; flex-direction:column; justify-content:center}
+  /* Inside an iframe the deck is one scrolling page: 92vh per slide would
+     fight the auto-sizing frame and leave huge empty gaps. */
+  html.in-frame .slide{min-height:auto; padding:40px 0 32px; justify-content:flex-start}
+  section.slide:last-child{border-bottom:none}
+  .kicker{text-transform:uppercase; letter-spacing:2.5px; font-size:12px; font-weight:600; color:var(--accent-ui); margin-bottom:12px}
+  h1{font-family:"Literata","PT Serif",Georgia,serif; font-size:40px; font-weight:600; line-height:1.2; margin-bottom:14px}
+  h2{font-family:"Literata","PT Serif",Georgia,serif; font-size:27px; font-weight:600; margin-bottom:18px}
+  .lead{color:var(--muted); font-size:18px; max-width:640px}
+  p{margin:10px 0}
+  ul{margin:8px 0 8px 22px}
+  li{margin:9px 0}
+  .muted{color:var(--muted)}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px 24px; margin:12px 0; box-shadow:0 2px 12px var(--shadow)}
+  .card.accent{border-left:4px solid var(--accent)}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  @media(max-width:640px){
+    .grid2{grid-template-columns:1fr}
+    h1{font-size:28px} h2{font-size:22px}
+    .deck{padding:0 16px}
+    section.slide{min-height:auto; padding:44px 0 34px}
+    .card{padding:16px 16px}
+    .quote{font-size:17px}
+    .lead{font-size:16px}
+    .theme-toggle{top:10px; right:10px; width:38px; height:38px}
+  }
+  .quote{font-family:"Literata","PT Serif",Georgia,serif; font-style:italic; font-size:19px; color:var(--ink); border-left:3px solid var(--accent); padding:6px 0 6px 18px; margin:18px 0}
+  .pill{display:inline-block; font-size:13px; color:var(--accent-ui); border:1px solid var(--accent); border-radius:20px; padding:4px 14px; margin:4px 6px 4px 0}
+  .footer-nav{display:flex; justify-content:space-between; padding:28px 0 60px; font-size:14px}
+  a{color:var(--accent-ui)}
+  .disclaimer{background:var(--warn-bg); border:1px solid var(--warn-line); color:var(--warn-ink); border-radius:12px; padding:14px 18px; font-size:14px; margin-top:22px}
+
+  .theme-toggle{position:fixed; top:16px; right:16px; z-index:50; width:42px; height:42px; border-radius:50%;
+    border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; font-size:17px;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px var(--shadow)}
+  .corner-toggles{position:fixed; top:16px; right:18px; z-index:20; display:flex; gap:8px}
+  .corner-toggles button{width:38px; height:38px; display:flex; align-items:center; justify-content:center;
+    background:var(--card); color:var(--muted); border:1px solid var(--line); border-radius:10px; cursor:pointer;
+    font-family:inherit; font-size:12px; font-weight:700; letter-spacing:.5px; transition:color .2s, border-color .2s}
+  .corner-toggles button:hover{color:var(--ink); border-color:var(--accent)}
+  @media (max-width:560px){.corner-toggles{top:10px; right:10px}}
+  .theme-toggle:hover{border-color:var(--accent)}
+
+</style>
+</head>
+<body>
+<div class="corner-toggles">
+  <button class="theme-toggle" id="themeToggle" title="Сменить тему"></button>
+</div>
+<div class="deck">
+  <!-- SLIDE 1: title -->
+  <section class="slide">
+    <div class="kicker">Character Types - 02 of 9</div>
+    <h1>The Hysterical (Histrionic) Type</h1>
+    <p class="lead">Brightness, charm, and a hunger for attention are the language spoken by a fear of going unnoticed and losing love.</p>
+    <div class="disclaimer">A character type is a stable "handwriting" of a healthy personality, not a diagnosis and not a reason for a label.</div>
+    <div class="toc">
+      <a href="#recognize">Do you recognize yourself?</a>
+      <a href="#essence">How this character works</a>
+      <a href="#origin">Where it comes from</a>
+      <a href="#strengths">Strengths</a>
+      <a href="#shadow">The shadow side</a>
+      <a href="#relations">In relationships and at work</a>
+      <a href="#growth">The path to balance</a>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: recognize yourself -->
+  <section class="slide" id="recognize">
+    <div class="kicker">Do you recognize yourself?</div>
+    <h2>The world is a stage, and it hurts when you're not at its center</h2>
+    <p>You walk into a room and immediately sense whether people are listening to you or not. If you're being watched with admiration, a light switches on inside: you're alive, you exist. Silence falls, and it's as if the current's been cut. You fall in love with people easily and grow disillusioned with them just as easily: yesterday someone seemed almost godlike, today they forgot to call back - and that's it, "traitor," no shades of gray. A small mishap turns into a gripping drama when you retell it, because saying "the bus was late" is physically boring for you. You're drawn to reserved, cold people - it feels like if you can just melt that icy heart, you'll prove to yourself that you're special. And when calm settles over a relationship, you start to doubt: does he even love me at all.</p>
+  </section>
+
+  <!-- SLIDE 3: essence -->
+  <section class="slide" id="essence">
+    <div class="kicker">How this character works</div>
+    <h2>Invisibility hidden behind brightness</h2>
+    <p>This type is called the "heart type": the world is experienced not through facts but through feelings and impressions. The psyche seems to constantly scan the space around it - what impression am I making right now? Approval, and a feeling of being alive floods through you. Silence, and an emptiness opens up that the psyche rushes to fill: intensify the emotion, stage a scene, dash off to rescue someone. Behind this isn't vanity but a matter of survival: "I'm noticed, therefore I'm safe." Attention here is oxygen, and outside approval is fast carbohydrates - an instant sweet spike with no lasting satisfaction.</p>
+    <p>Hence the defensive maneuvers that look like character traits but are really old survival strategies. Dramatization turns emotion into a tool - a little louder and brighter than the occasion calls for - it always has an audience, even if only an imagined one. Idealization and devaluation are a search for the perfect parent: at first a person seems godlike, and after the first ordinary mistake they're knocked off the pedestal with no right of appeal. Flirtation here isn't about sex but social glue - look, but don't touch. Impulsivity is a release valve: a sharp word discharges the pressure in a second. And the body says what the voice doesn't dare to: a lump in the throat is a grievance that was never swallowed - or rather, never let go.</p>
+    <p>Behind the theatricality lies real creative potential, but alongside it a chronic inner emptiness. Drama functions here as a substitute for closeness: calm love feels boring, because true intimacy requires showing yourself as imperfect, not just the polished facade.</p>
+  </section>
+
+  <!-- SLIDE 4: origin -->
+  <section class="slide" id="origin">
+    <div class="kicker">Origins</div>
+    <h2>Where it comes from</h2>
+    <p>Character is a set of creative solutions a child invented in order to survive and get love within their own family. From childhood, emotions became a currency that could buy the attention necessary for survival.</p>
+    <div class="card accent"><ul>
+      <li>The "invisible child" scenario: the parents were absorbed in themselves, and the child had to turn up the volume on their own feelings just to be seen - over time this became a habit.</li>
+      <li>The "child as ornament" scenario: only the outward appearance was encouraged, and being boring or irritable was never allowed - hence the fear of showing one's true self.</li>
+      <li>The "triangle" between parents: the child became a comforter for one of them, learning from an early age to manage other people's feelings to keep peace in the family.</li>
+      <li>One important adult was cold, another seductive and inconsistent; attracting attention through brightness became a reliable strategy.</li>
+    </ul></div>
+    <p class="muted">Understanding the causes isn't about finding someone to blame - it's a way of treating your own traits with compassion.</p>
+  </section>
+
+  <!-- SLIDE 5: strengths + shadow -->
+  <section class="slide" id="strengths">
+    <div class="kicker">Two sides</div>
+    <h2>Strengths</h2>
+    <div class="card"><ul>
+      <li>Enormous empathy - the ability to breathe life into other people through imagery and genuine feeling.</li>
+      <li>Natural magnetism and creativity that make you remarkably effective in communication, creative work, and helping people.</li>
+      <li>Impressionability that picks up on the moods of those around you faster than any lie detector - a rare gift for a negotiator, a leader, a friend.</li>
+      <li>Artistry and charisma that turn into real talent the moment theatricality stops depending on other people's approval.</li>
+      <li>The ability to instantly cheer up someone who's feeling down, or to "sell" a team on an inspiring idea.</li>
+      <li>At the healthy end of the spectrum: discipline in creative work and a capacity for deep, devoted love, with charm serving warm connection rather than manipulation.</li>
+    </ul></div>
+  </section>
+
+  <section class="slide" id="shadow">
+    <div class="kicker">Two sides</div>
+    <h2>The shadow side</h2>
+    <div class="card"><ul>
+      <li>Self-esteem is "outsourced," like a mirror: a like, and you exist; silence, and you seem to disappear.</li>
+      <li>Dramatization: the intensity of feelings is often several times greater than the occasion calls for, and the emotion almost always has an audience.</li>
+      <li>Impulsivity - sharp words, unnecessary purchases, sudden resignations, as a way to release tension instantly.</li>
+      <li>The swing between idealization and devaluation: today the partner is nearly a god, tomorrow, after an ordinary mistake, a "traitor," with no shades of gray.</li>
+      <li>Manipulation instead of a direct request: sighs, sulking, tears - out of fear of hearing "no."</li>
+      <li>An unconscious fear of one's own strength - ambition feels like a "badness" that threatens the right to be loved.</li>
+      <li>The body absorbs the blow - a lump in the throat, numbness, dizziness say what words won't.</li>
+    </ul></div>
+  </section>
+
+  <!-- SLIDE 6: relations & work -->
+  <section class="slide" id="relations">
+    <div class="kicker">Life with this character</div>
+    <h2>In relationships and at work</h2>
+    <div class="card"><ul>
+      <li>Often drawn to emotionally cold partners - an attempt to warm yourself against a block of ice; in practice this protects against real closeness.</li>
+      <li>A scene or a scandal often works as a connection test: the partner reacts strongly, which must mean you still affect them.</li>
+      <li>What helps is a shift from enchantment to acceptance: noticing the quiet signs of love without special effects, and learning to tolerate an ordinary day without drama.</li>
+    </ul></div>
+    <div class="card"><ul>
+      <li>The need to be seen finds its best outlet through a profession: performing, teaching, blogging, acting.</li>
+      <li>Healthy self-realization happens when the stage is separate from home: being vivid professionally without staging a performance for the people closest to you.</li>
+      <li>A valuable shift is moving from "look at how I am" to a more mature "look at what useful thing I made."</li>
+    </ul></div>
+  </section>
+
+  <!-- SLIDE 7: growth -->
+  <section class="slide" id="growth">
+    <div class="kicker">Practice</div>
+    <h2>The path to balance</h2>
+    <div class="card accent"><ul>
+      <li>Write yourself a letter from the perspective of a loving spectator, noting the small achievements of the day that no one else saw.</li>
+      <li>Test your emotion with a scale: rate the reaction on a 10-point scale relative to the occasion - a late bus rarely deserves a nine.</li>
+      <li>At an emotional peak, take a pause of at least 10 minutes: don't send messages "in the heat of the moment," breathe, name five objects around you out loud.</li>
+      <li>Describe your state with a weather metaphor - "a hailstorm," "dead calm": you are not your emotions, you are the sky they pass through.</li>
+      <li>Phrase requests directly: "I feel X when Y happens, and I'm asking you to do A" - instead of sighs and hints.</li>
+      <li>Before an impulsive act, write down what you want to do, what you feel right now, and how you'll feel about it in a month.</li>
+      <li>Split a sheet of paper into two columns: what you had to do as a child to earn praise, and where you use the same tactics today.</li>
+    </ul></div>
+    <div class="disclaimer">If any of these traits seriously get in the way of your life, relationships, or work, that's a reason to discuss them with a professional - not to fight them alone.</div>
+  </section>
+
+  <!-- SLIDE 8: closing -->
+  <section class="slide" id="closing">
+    <div class="kicker">Summary</div>
+    <h2>What to take with you</h2>
+    <div class="card"><ul>
+      <li>Your need for attention isn't a whim - it's an old cry for safety that once helped you survive.</li>
+      <li>Drama is a substitute for closeness: it gives the illusion of an intense life, but real intimacy is built on ordinary, quiet days.</li>
+      <li>Outside approval works like fast carbohydrates - it gives you a spike but never satisfies; only your own view of yourself can truly satisfy you.</li>
+      <li>You exist even when no one is watching, and your worth isn't measured by the number of rounds of applause.</li>
+    </ul></div>
+    <p>Your brightness isn't a flaw - it's a rare instrument: the ability to sense people and bring the space around you to life. The task isn't to become quieter, but to one day remain yourself in silence too - without feeling like you've disappeared.</p>
+  </section>
+
+  <div class="footer-nav">
+    <a href="../../index.html">Back to home</a>
+    <span class="muted">The Hysterical (Histrionic) Type</span>
+  </div>
+</div>
+<script>(function(){var b=document.getElementById("themeToggle");
+var SUN='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+var MOON='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+function icon(){b.innerHTML=document.documentElement.getAttribute("data-theme")==="light"?MOON:SUN;}
+b.onclick=function(){var n=document.documentElement.getAttribute("data-theme")==="light"?"dark":"light";
+document.documentElement.setAttribute("data-theme",n);try{localStorage.setItem("chartheme",n)}catch(e){}icon();};
+icon();})();</script>
+<script>
+// Inside the Tilda embed the deck is one long page in a resizing frame: flag it
+// for CSS, report our height, and scroll the parent back to the top on arrival
+// so a visitor does not land mid-page with no way back except the browser.
+(function(){
+  if(window.parent===window) return;
+  document.documentElement.classList.add("in-frame");
+  var send=function(){
+    var h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);
+    try{window.parent.postMessage({type:"ctt:height",height:h},"*")}catch(e){}
+  };
+  try{window.parent.postMessage({type:"ctt:top"},"*")}catch(e){}
+  send();
+  window.addEventListener("load",send);
+  addEventListener("resize",send);
+  setTimeout(send,300); setTimeout(send,1200);
+})();
+</script>
+<script>
+// The language choice is shared with the test through localStorage; switching
+// here navigates to the same presentation in the next language.
+(function(){
+  var LANGS=["ru","uk","en"], HERE="en", FILE="02-hysteric.html";
+  var box=document.querySelector(".corner-toggles");
+  if(!box) return;
+  var b=document.createElement("button");
+  b.id="langToggle"; b.title="Change language"; b.textContent=HERE.toUpperCase();
+  b.onclick=function(){
+    var next=LANGS[(LANGS.indexOf(HERE)+1)%LANGS.length];
+    try{localStorage.setItem("chartlang",next)}catch(e){}
+    location.href=(next==="ru"?"../":"../"+next+"/")+FILE;
+  };
+  box.insertBefore(b, box.firstChild);
+})();
+</script>
+</body>
+</html>
