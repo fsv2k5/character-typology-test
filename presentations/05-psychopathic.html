@@ -66,12 +66,20 @@ document.documentElement.setAttribute("data-theme",t);})();</script>
   .theme-toggle{position:fixed; top:16px; right:16px; z-index:50; width:42px; height:42px; border-radius:50%;
     border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; font-size:17px;
     display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px var(--shadow)}
+  .corner-toggles{position:fixed; top:16px; right:18px; z-index:20; display:flex; gap:8px}
+  .corner-toggles button{width:38px; height:38px; display:flex; align-items:center; justify-content:center;
+    background:var(--card); color:var(--muted); border:1px solid var(--line); border-radius:10px; cursor:pointer;
+    font-family:inherit; font-size:12px; font-weight:700; letter-spacing:.5px; transition:color .2s, border-color .2s}
+  .corner-toggles button:hover{color:var(--ink); border-color:var(--accent)}
+  @media (max-width:560px){.corner-toggles{top:10px; right:10px}}
   .theme-toggle:hover{border-color:var(--accent)}
 
 </style>
 </head>
 <body>
-<button class="theme-toggle" id="themeToggle" title="Сменить тему"></button>
+<div class="corner-toggles">
+  <button class="theme-toggle" id="themeToggle" title="Сменить тему"></button>
+</div>
 <div class="deck">
 
   <!-- SLIDE 1: title -->
@@ -211,6 +219,21 @@ icon();})();</script>
   window.addEventListener("load",send);
   addEventListener("resize",send);
   setTimeout(send,300); setTimeout(send,1200);
+})();
+</script>
+<script>
+(function(){
+  var LANGS=["ru","uk","en"], HERE="ru", FILE="05-psychopathic.html";
+  var box=document.querySelector(".corner-toggles");
+  if(!box) return;
+  var b=document.createElement("button");
+  b.id="langToggle"; b.title="Change language"; b.textContent="RU";
+  b.onclick=function(){
+    var next=LANGS[(LANGS.indexOf(HERE)+1)%LANGS.length];
+    try{localStorage.setItem("chartlang",next)}catch(e){}
+    location.href=(next==="ru"?"":next+"/")+FILE;
+  };
+  box.insertBefore(b, box.firstChild);
 })();
 </script>
 </body>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Obsessive-Compulsive Type - Type Presentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<script>(function(){var t=null;try{t=localStorage.getItem("chartheme")}catch(e){}
+if(!t)t=(window.matchMedia&&matchMedia("(prefers-color-scheme: light)").matches)?"light":"dark";
+document.documentElement.setAttribute("data-theme",t);})();</script>
+<style>
+  :root{ --accent:#5f9490; --accent-soft:rgba(95,148,144,.13); }
+  html[data-theme="dark"]{
+    --bg:#151715; --card:#1e221f; --card2:#252a26; --ink:#eae9e2; --muted:#a1a69c;
+    --line:#333b34; --accent-ui:var(--accent); --on-accent:#141814; --shadow:rgba(0,0,0,.30);
+    --warn-bg:rgba(224,180,88,.08); --warn-line:rgba(224,180,88,.35); --warn-ink:#d9c390;
+  }
+  html[data-theme="light"]{
+    --bg:#f6f3ec; --card:#ffffff; --card2:#f1eee6; --ink:#2e2c28; --muted:#6f6d64;
+    --line:#e2ddd0; --accent-ui:color-mix(in srgb, var(--accent) 65%, #2e2c28); --on-accent:#ffffff; --shadow:rgba(70,65,50,.10);
+    --warn-bg:rgba(176,138,50,.08); --warn-line:rgba(176,138,50,.35); --warn-ink:#7c6a3a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
+  html{-webkit-text-size-adjust:100%}
+  html{scroll-behavior:smooth}
+  body{
+    background:radial-gradient(1100px 700px at 75% -10%, var(--accent-soft) 0%, var(--bg) 60%);
+    color:var(--ink); font-family:"Inter","SF Pro Text",-apple-system,"Segoe UI",Roboto,Arial,sans-serif; font-size:16.5px; line-height:1.65;
+    transition:background-color .3s, color .3s;
+  }
+  .deck{max-width:860px; margin:0 auto; padding:0 22px}
+  section.slide{min-height:92vh; padding:64px 0 48px; border-bottom:1px solid var(--line); display:flex; flex-direction:column; justify-content:center}
+  /* Inside an iframe the deck is one scrolling page: 92vh per slide would
+     fight the auto-sizing frame and leave huge empty gaps. */
+  html.in-frame .slide{min-height:auto; padding:40px 0 32px; justify-content:flex-start}
+  section.slide:last-child{border-bottom:none}
+  .kicker{text-transform:uppercase; letter-spacing:2.5px; font-size:12px; font-weight:600; color:var(--accent-ui); margin-bottom:12px}
+  h1{font-family:"Literata","PT Serif",Georgia,serif; font-size:40px; font-weight:600; line-height:1.2; margin-bottom:14px}
+  h2{font-family:"Literata","PT Serif",Georgia,serif; font-size:27px; font-weight:600; margin-bottom:18px}
+  .lead{color:var(--muted); font-size:18px; max-width:640px}
+  p{margin:10px 0}
+  ul{margin:8px 0 8px 22px}
+  li{margin:9px 0}
+  .muted{color:var(--muted)}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px 24px; margin:12px 0; box-shadow:0 2px 12px var(--shadow)}
+  .card.accent{border-left:4px solid var(--accent)}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  @media(max-width:640px){
+    .grid2{grid-template-columns:1fr}
+    h1{font-size:28px} h2{font-size:22px}
+    .deck{padding:0 16px}
+    section.slide{min-height:auto; padding:44px 0 34px}
+    .card{padding:16px 16px}
+    .quote{font-size:17px}
+    .lead{font-size:16px}
+    .theme-toggle{top:10px; right:10px; width:38px; height:38px}
+  }
+  .quote{font-family:"Literata","PT Serif",Georgia,serif; font-style:italic; font-size:19px; color:var(--ink); border-left:3px solid var(--accent); padding:6px 0 6px 18px; margin:18px 0}
+  .pill{display:inline-block; font-size:13px; color:var(--accent-ui); border:1px solid var(--accent); border-radius:20px; padding:4px 14px; margin:4px 6px 4px 0}
+  .footer-nav{display:flex; justify-content:space-between; padding:28px 0 60px; font-size:14px}
+  a{color:var(--accent-ui)}
+  .disclaimer{background:var(--warn-bg); border:1px solid var(--warn-line); color:var(--warn-ink); border-radius:12px; padding:14px 18px; font-size:14px; margin-top:22px}
+
+  .theme-toggle{position:fixed; top:16px; right:16px; z-index:50; width:42px; height:42px; border-radius:50%;
+    border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; font-size:17px;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px var(--shadow)}
+  .corner-toggles{position:fixed; top:16px; right:18px; z-index:20; display:flex; gap:8px}
+  .corner-toggles button{width:38px; height:38px; display:flex; align-items:center; justify-content:center;
+    background:var(--card); color:var(--muted); border:1px solid var(--line); border-radius:10px; cursor:pointer;
+    font-family:inherit; font-size:12px; font-weight:700; letter-spacing:.5px; transition:color .2s, border-color .2s}
+  .corner-toggles button:hover{color:var(--ink); border-color:var(--accent)}
+  @media (max-width:560px){.corner-toggles{top:10px; right:10px}}
+  .theme-toggle:hover{border-color:var(--accent)}
+
+</style>
+</head>
+<body>
+<div class="corner-toggles">
+  <button class="theme-toggle" id="themeToggle" title="Сменить тему"></button>
+</div>
+<div class="deck">
+
+  <!-- SLIDE 1: title -->
+  <section class="slide">
+    <div class="kicker">Character Types - 07 of 9</div>
+    <h1>Obsessive-Compulsive Type</h1>
+    <p class="lead">The mind as the safest place in the world: order, discipline, and control instead of uncertainty and living feelings.</p>
+    <div class="disclaimer">A character type is a stable "handwriting" of a healthy personality - not a diagnosis.</div>
+    <div class="toc">
+      <a href="#recognize">Do You Recognize Yourself?</a>
+      <a href="#essence">How This Character Works</a>
+      <a href="#origin">Where It Comes From</a>
+      <a href="#strengths">Strengths</a>
+      <a href="#shadow">The Shadow Side</a>
+      <a href="#relations">In Relationships and at Work</a>
+      <a href="#growth">The Path to Balance</a>
+      <a href="#takeaway">What to Take With You</a>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: recognize -->
+  <section class="slide" id="recognize">
+    <div class="kicker">Do You Recognize Yourself?</div>
+    <h2>The To-Do List Matters More Than the Party</h2>
+    <p>Friday evening. On the table is a neatly ruled plan for the weekend, and just looking at it makes you calmer. Someone suggests a spontaneous trip out of town - a good idea, but inside you instantly feel anxious: what about the unfinished tasks? You agree, but half the drive you're mentally "polishing" a report that's long been ready, just not perfect. A colleague missed a comma in a letter to a client - and you can't sleep half the night, as if you'd made the mistake yourself. Someone tells you "relax, you're too hard on yourself" - and that's irritating, because without that strictness, it feels like everything would fall apart. The only question is what's "correct" - a list that never closes.</p>
+  </section>
+
+  <!-- SLIDE 3: essence -->
+  <section class="slide" id="essence">
+    <div class="kicker">How This Character Works</div>
+    <h2>Being Alive - or Being Perfect</h2>
+    <p>At the core of this character is an unspoken bargain: the mind is traded for living feelings. Logic, order, and discipline become a shield against the world's uncertainty and against one's own strong emotions, which feel like a danger capable of taking away self-control. The head is the safest place, because everything there can be controlled; the world is engaged with through <em>doing</em> and <em>thinking things through</em>, rather than through living it.</p>
+    <p>The central conflict is between the wish to be alive, spontaneous, human - and an inner demand to be flawless. Spontaneity gets sacrificed to control, and life turns into a string of "must, have to, should," where "I want" is rarely heard.</p>
+    <p>The main defense is intellectualization: instead of "it hurts, I'm angry," polite reasoning about the causes of the situation kicks in. This pushes the discomfort aside, but it also drains genuine closeness out of life. The second mechanism is thought-action fusion: think of something bad, and it feels almost as if the act has already been committed - a struggle with one's own thought begins, which only intensifies the obsessiveness.</p>
+    <p>Control gives an illusion: if you're vigilant enough, nothing bad will happen. But the illusion demands enormous energy - and sooner or later the tension bursts through the dam in a breakdown right where everything seemed to be under control.</p>
+  </section>
+
+  <!-- SLIDE 4: origin -->
+  <section class="slide" id="origin">
+    <div class="kicker">Origins</div>
+    <h2>Where It Comes From</h2>
+    <p>The mechanism is laid down early: the only way to earn approval or avoid criticism is to be correct and sensible. Over time this turns into a strict inner code the person carries for life.</p>
+    <div class="card accent"><ul>
+      <li>Mistakes in childhood weren't forgiven, they were mocked - a strict, critical parent gradually became an inner voice.</li>
+      <li>The child often had to be "more grown-up than their parents": checking themselves whether the door was locked, because the adults might forget - or adjusting to rules that changed without warning.</li>
+      <li>In response, a strategy was born: "I'll control everything myself, so no one can catch me off guard."</li>
+      <li>The child could feel responsible for the parents' mood - "Mom is sad, so I must have done something wrong" - and this habit of looking for the cause of trouble in oneself hardened into chronic guilt.</li>
+      <li>Paradoxically, guilt was reassuring: "if it's my fault, then I can still fix it" - admitting one's own powerlessness was far more painful.</li>
+    </ul></div>
+  </section>
+
+  <!-- SLIDE 5: strengths + shadow -->
+  <section class="slide" id="strengths">
+    <div class="kicker">Two Sides</div>
+    <h2>Strengths</h2>
+    <div class="card"><ul>
+      <li>Reliability and discipline on a scale such that a large part of our world rests on the shoulders of exactly these people.</li>
+      <li>Attention to detail and the ability to carry analysis to a depth unreachable for faster-moving characters.</li>
+      <li>Honesty and consistency - their word holds, what's started gets finished.</li>
+      <li>The ability to build structure and order where others get lost.</li>
+      <li>At the healthy level - drive, sensible perfectionism, and natural leadership: people see this kind of person as a pillar of support.</li>
+      <li>You can hand this person the most complex project and be confident they won't let you down.</li>
+      <li>The ability to admit a mistake, draw conclusions, and move on, without letting irritation ruin the whole day.</li>
+    </ul></div>
+  </section>
+
+  <section class="slide" id="shadow">
+    <div class="kicker">Two Sides</div>
+    <h2>The Shadow Side</h2>
+    <div class="card"><ul>
+      <li>Chronic anxiety from the need to keep everything around you under control - control only masks the anxiety, it doesn't remove the cause.</li>
+      <li>Difficulty making decisions: the mind endlessly "chews over" information in search of the flawless option, which doesn't exist.</li>
+      <li>A fear of error equal in force to a fear of moral downfall - a slip is experienced as proof of incompetence.</li>
+      <li>Chronic, often irrational guilt - over thoughts, over productivity, even over other people's emotions.</li>
+      <li>Procrastination that's actually not laziness but fear of failing to live up to one's own ideal.</li>
+      <li>Difficulty expressing warmth: criticizing a partner often turns out to be an attempt to make them more predictable.</li>
+      <li>Workaholism as an escape from inner emptiness, and an inability to delegate or ask for help.</li>
+      <li>Black-and-white thinking: a middle path seems not to exist.</li>
+    </ul></div>
+  </section>
+
+  <!-- SLIDE 6: relations & work -->
+  <section class="slide" id="relations">
+    <div class="kicker">Living With This Character</div>
+    <h2>In Relationships and at Work</h2>
+    <div class="card"><p><strong>In Relationships.</strong> The urge to "improve" a partner and constant criticism is, oddly enough, not a lack of love but an attempt to make them predictable and safe; the partner often experiences it as tyranny. Being closed off protects against the fear that other people's feelings will "overwhelm" you, so in tense moments logic and advice kick in instead of an embrace. Partners usually don't complain about the organization - they complain that no warmth is visible behind all the rules.</p></div>
+    <div class="card" style="margin-top:14px"><p><strong>At Work.</strong> Workaholism here is rarely about love for the profession - more often it's an escape from inner emptiness into a domain with clear rules: "if I didn't suffer through it, I must have phoned it in." It's hard to say "no" and delegate: refusal feels like incompetence, and the person takes on more and more until productivity becomes a prison. Fixation on details obscures the overall goal: you can't see the forest for the trees.</p></div>
+  </section>
+
+  <!-- SLIDE 7: growth -->
+  <section class="slide" id="growth">
+    <div class="kicker">Practice</div>
+    <h2>The Path to Balance</h2>
+    <div class="card accent"><ul>
+      <li>Shift the focus from "correct" to "good enough": most tasks don't need a perfect solution, being decent is enough.</li>
+      <li>Explore in writing what the worst thing would be that could happen inside you if you gave up all your lists for a day - that's how you find the fear behind the drive for order.</li>
+      <li>Draw your "circle of influence": a circle with what you can actually affect, and outside it, what you're trying to control but can't.</li>
+      <li>Grow an inner advocate instead of an inner judge: find three reasons a mistake was useful or unavoidable, and move on without self-flagellation.</li>
+      <li>Separate real guilt, which has actual intent behind it, from toxic guilt, which is emotional noise with none.</li>
+      <li>Use the 5-4-3-2-1 grounding technique: five objects, four sensations, three sounds, two smells, one taste - to come back from your head into your body.</li>
+      <li>Legalize rest: set aside a "zone free of usefulness" and treat it as a condition, not a reward.</li>
+      <li>Plan one deliberate "failure" a week and notice that the world doesn't collapse.</li>
+    </ul></div>
+    <div class="disclaimer">If any of these traits are seriously getting in the way of your life, relationships, or work - that's a reason to discuss them with a specialist, not to fight it alone.</div>
+  </section>
+
+  <!-- SLIDE 8: takeaway -->
+  <section class="slide" id="takeaway">
+    <div class="kicker">In Closing</div>
+    <h2>What to Take With You</h2>
+    <div class="quote">Control doesn't get rid of anxiety - it only masks it temporarily and makes you run the loop faster and faster.</div>
+    <div class="quote">There's no such thing as a loss-free decision: every choice drags along the giving-up of something else - that's the normal price of adult life, not a reason to keep hunting for the flawless option.</div>
+    <div class="quote">Your character is defined by your actions and choices, not by the thoughts that pop into your head on their own.</div>
+    <div class="quote">Obsessive-compulsive traits are a huge gift - if they serve you, rather than you serving them.</div>
+    <p style="margin-top:18px">Order and attention to detail aren't something you need to get rid of. It's not about becoming a different person - it's about sometimes allowing yourself to be imperfect, and discovering that the world doesn't fall apart because of it.</p>
+  </section>
+
+  <div class="footer-nav">
+    <a href="../../index.html">&larr; Take the Test</a>
+    <span class="muted">Obsessive-Compulsive Type</span>
+  </div>
+</div>
+<script>(function(){var b=document.getElementById("themeToggle");
+var SUN='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+var MOON='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+function icon(){b.innerHTML=document.documentElement.getAttribute("data-theme")==="light"?MOON:SUN;}
+b.onclick=function(){var n=document.documentElement.getAttribute("data-theme")==="light"?"dark":"light";
+document.documentElement.setAttribute("data-theme",n);try{localStorage.setItem("chartheme",n)}catch(e){}icon();};
+icon();})();</script>
+<script>
+// Inside the Tilda embed the deck is one long page in a resizing frame: flag it
+// for CSS, report our height, and scroll the parent back to the top on arrival
+// so a visitor does not land mid-page with no way back except the browser.
+(function(){
+  if(window.parent===window) return;
+  document.documentElement.classList.add("in-frame");
+  var send=function(){
+    var h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight);
+    try{window.parent.postMessage({type:"ctt:height",height:h},"*")}catch(e){}
+  };
+  try{window.parent.postMessage({type:"ctt:top"},"*")}catch(e){}
+  send();
+  window.addEventListener("load",send);
+  addEventListener("resize",send);
+  setTimeout(send,300); setTimeout(send,1200);
+})();
+</script>
+<script>
+// The language choice is shared with the test through localStorage; switching
+// here navigates to the same presentation in the next language.
+(function(){
+  var LANGS=["ru","uk","en"], HERE="en", FILE="07-obsessive.html";
+  var box=document.querySelector(".corner-toggles");
+  if(!box) return;
+  var b=document.createElement("button");
+  b.id="langToggle"; b.title="Change language"; b.textContent=HERE.toUpperCase();
+  b.onclick=function(){
+    var next=LANGS[(LANGS.indexOf(HERE)+1)%LANGS.length];
+    try{localStorage.setItem("chartlang",next)}catch(e){}
+    location.href=(next==="ru"?"../":"../"+next+"/")+FILE;
+  };
+  box.insertBefore(b, box.firstChild);
+})();
+</script>
+</body>
+</html>
