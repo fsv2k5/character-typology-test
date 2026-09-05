@@ -495,14 +495,22 @@ function emailHTML(sc){
         SERIF="Literata,'PT Serif',Georgia,serif",
         SANS="Inter,-apple-system,'Segoe UI',Roboto,Arial,sans-serif";
   const esc=t=>String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  // Percentage widths need a resolved parent width, which mobile Gmail does not
+  // give a nested table: the fill then renders a couple of pixels wide. Fixed
+  // pixel widths render identically everywhere.
+  const TRACK=240;
   const bars=sc.map(({t,score})=>{
     const pct=Math.max(0,Math.min(100,score));
+    const fill=Math.max(4,Math.round(TRACK*pct/100));
     return `<tr>
-      <td style="padding:7px 0;font:400 15px ${SANS};width:210px"><a href="${SITE_URL}${typeHref(t.file)}" style="color:${INK};text-decoration:none">${esc(t.name)}</a></td>
-      <td style="padding:7px 10px"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:${CARD2};border:1px solid ${LINE};border-radius:8px"><tr><td style="padding:0">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${pct}%" style="width:${pct}%"><tr><td style="background:${t.color};height:14px;border-radius:8px;font-size:0;line-height:14px">&nbsp;</td></tr></table>
-      </td></tr></table></td>
-      <td style="padding:7px 0;font:400 14px ${SANS};color:${MUTED};text-align:right;width:44px">${pct}</td>
+      <td style="padding:9px 14px 9px 0;font:400 15px ${SANS};white-space:nowrap" width="300"><a href="${SITE_URL}${typeHref(t.file)}" style="color:${ACC};text-decoration:underline">${esc(t.name)}</a> <span style="color:${ACC}">-&gt;</span></td>
+      <td style="padding:9px 10px" width="${TRACK}">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${TRACK}" style="width:${TRACK}px;background:${CARD2};border:1px solid ${LINE};border-radius:8px"><tr>
+          <td width="${fill}" style="width:${fill}px;background:${t.color};height:14px;border-radius:8px;font-size:0;line-height:14px">&nbsp;</td>
+          <td style="font-size:0;line-height:14px">&nbsp;</td>
+        </tr></table>
+      </td>
+      <td style="padding:9px 0;font:400 14px ${SANS};color:${MUTED};text-align:right" width="44">${pct}</td>
     </tr>`;
   }).join("");
   const cards=sc.slice(0,3).map(({t,ti,score},i)=>{
