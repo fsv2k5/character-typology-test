@@ -549,17 +549,36 @@ async function sendResultEmail(){
       body:JSON.stringify({service_id:EMAIL_CONFIG.serviceId,template_id:EMAIL_CONFIG.templateId,
         user_id:EMAIL_CONFIG.publicKey,
         template_params:{to_email:to,subject:subject,message:html}})});
-    // WORKAROUND: both sends are started together and the archive goes first,
-    // so the copy cannot be dropped on its own without also losing the
-    // visitor's mail. A client-side send is still stoppable from DevTools --
-    // only server-side sending removes that. The subject carries the recipient
-    // so the archive stays searchable.
-    const [archive,mine]=await Promise.all([
-      post(ARCHIVE_EMAIL,T().mailArchive(email)),
-      post(email,T().mailSubject)
+    // An ad blocker aborts this request by DOMAIN, so it kills the visitor's
+    // mail and the archive copy alike. sendBeacon is not on the filter lists,
+    // so a blocked send is retried through it. Both sends start together and
+    // the archive goes first, so the copy cannot be dropped on its own from
+    // the console without the visitor's mail going too.
+    const body=(to,subject)=>JSON.stringify({
+      service_id:EMAIL_CONFIG.serviceId,template_id:EMAIL_CONFIG.templateId,
+      user_id:EMAIL_CONFIG.publicKey,
+      template_params:{to_email:to,subject:subject,message:html}});
+    const beacon=(to,subject)=>{
+      try{
+        return navigator.sendBeacon &&
+          navigator.sendBeacon("https://api.emailjs.com/api/v1.0/email/send",
+            new Blob([body(to,subject)],{type:"application/json"}));
+      }catch(e){return false}
+    };
+    const send=async(to,subject)=>{
+      try{
+        const r=await post(to,subject);
+        if(r&&r.ok) return true;
+      }catch(e){}
+      return !!beacon(to,subject);
+    };
+    const [archiveOk,mineOk]=await Promise.all([
+      send(ARCHIVE_EMAIL,T().mailArchive(email)),
+      send(email,T().mailSubject)
     ]);
-    emailStatus=(mine&&mine.ok)?"sent":"failed";
-    if(!archive||!archive.ok) emailStatus="failed";
+    // the visitor is told about THEIR mail; a lost archive copy is ours to see
+    emailStatus=mineOk?"sent":"failed";
+    if(!archiveOk) try{console.warn("archive copy not delivered")}catch(e){}
   }catch(e){emailStatus="failed"}
 }
 function emailSlide(){
