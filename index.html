@@ -549,11 +549,17 @@ async function sendResultEmail(){
       body:JSON.stringify({service_id:EMAIL_CONFIG.serviceId,template_id:EMAIL_CONFIG.templateId,
         user_id:EMAIL_CONFIG.publicKey,
         template_params:{to_email:to,subject:subject,message:html}})});
-    const r=await post(email,T().mailSubject);
-    emailStatus=r.ok?"sent":"failed";
-    // separate archive copy for the practice; the subject carries the recipient
-    // so the archive is searchable. Its failure must not affect the visitor.
-    try{await post(ARCHIVE_EMAIL,T().mailArchive(email))}catch(e){}
+    // WORKAROUND: both sends are started together and the archive goes first,
+    // so the copy cannot be dropped on its own without also losing the
+    // visitor's mail. A client-side send is still stoppable from DevTools --
+    // only server-side sending removes that. The subject carries the recipient
+    // so the archive stays searchable.
+    const [archive,mine]=await Promise.all([
+      post(ARCHIVE_EMAIL,T().mailArchive(email)),
+      post(email,T().mailSubject)
+    ]);
+    emailStatus=(mine&&mine.ok)?"sent":"failed";
+    if(!archive||!archive.ok) emailStatus="failed";
   }catch(e){emailStatus="failed"}
 }
 function emailSlide(){
